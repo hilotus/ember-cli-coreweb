@@ -12,7 +12,7 @@ SelectPickerComponent = Ember.Component.extend
   content: []
   isMultiple: false
   keywords: ""
-  searchContent: Ember.A
+  searchContent: []
   selection: []
 
   title: Ember.computed 'selection.id', 'selection.length', ->
@@ -20,7 +20,6 @@ SelectPickerComponent = Ember.Component.extend
       if !@selection or @get('selection.length') is 0
         @prompt
       else
-        Ember.A @selection unless $.isFunction @selection.contains
         (
           @selection.map (item) ->
             item.get('name')
@@ -34,11 +33,9 @@ SelectPickerComponent = Ember.Component.extend
     if @isActive then $drop.css(left: '0px') else $drop.css(left: '-10000px')
 
   keywordsChanged: Ember.observer 'keywords', ->
-    Ember.A @content unless $.isFunction @content.contains
-
     keywords = @keywords
     if keywords
-      @set 'searchContent', Ember.A @content.filter((item) ->
+      @set 'searchContent', @content.filter((item) ->
         return (item.get('name') or "").toLowerCase().indexOf(keywords.toLowerCase()) > -1
       )
     else
