@@ -1,0 +1,22 @@
+<div class="container" style="padding: 15px;">
+  <div class="row">
+    <div class="pure-u-1 pure-u-md-1-4">
+      <div class="sidebar">
+        <div class="nav">
+          <div class="nav-header">
+            <h3>{{#link-to 'index'}}Dummy{{/link-to}}</h3>
+          </div>
+          <ul class="nav-stacked">
+            <li>{{#link-to 'checkbox'}}Checkbox{{/link-to}}</li>
+            <li>{{#link-to 'button'}}Button{{/link-to}}</li>
+            <li>{{#link-to 'dropbutton'}}Drop Button{{/link-to}}</li>
+            <li>{{#link-to 'picker'}}Picker{{/link-to}}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="pure-u-1 pure-u-md-3-4">
+      <div class="content">{{outlet}}</div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,106 @@
+@mixin centre($axis: "both") {
+  position: absolute;
+  @if $axis == "y" {
+    top: 50%;
+    @include translateY(-50%);
+  }
+  @if $axis == "x" {
+    left: 50%;
+    @include translateX(-50%);
+  }
+  @if $axis == "both" {
+    top: 50%;
+    left: 50%;
+    @include translate(-50%, -50%);
+  }
+}
+
+// Supports
+.horizontal-left {
+  text-align: left
+}
+.horizontal-center {
+  text-align: center
+}
+.horizontal-right {
+  text-align: right
+}
+.pull-right {
+  float: right !important;
+}
+.pull-left {
+  float: left !important;
+}
+.show {
+  display: block !important;
+}
+.invisible {
+  visibility: hidden;
+}
+.hidden, .hide {
+  display: none !important;
+}
+.pointer {
+  cursor: pointer
+}
+.inline {
+  display: inline
+}
+.sidebar {
+  padding: 0 10px 10px 10px;
+}
+.content {
+  padding: 0 10px 10px 10px;
+}
+
+.container {
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+@media (min-width: 768px) {
+  .container {
+    width: 750px;
+  }
+}
+@media (min-width: 992px) {
+  .container {
+    width: 970px;
+  }
+}
+@media (min-width: 1200px) {
+  .container {
+    width: 1170px;
+  }
+}
+.container-fluid {
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.container-center {
+  @include centre()
+}
+
+.row {
+  letter-spacing: -0.31em; /* Webkit: collapse white-space between units */
+  *letter-spacing: normal; /* reset IE < 8 */
+  *word-spacing: -0.43em; /* IE < 8: collapse white-space between units */
+  text-rendering: optimizespeed; /* Webkit: fixes text-rendering: optimizeLegibility */
+
+  /*
+  Use flexbox when possible to avoid `letter-spacing` side-effects.
+
+  NOTE: Firefox (as of 25) does not currently support flex-wrap, so the
+  `-moz-` prefix version is omitted.
+  */
+  display: -webkit-flex;
+  -webkit-flex-flow: row wrap;
+
+  /* IE10 uses display: flexbox */
+  display: -ms-flexbox;
+  -ms-flex-flow: row wrap;
+}

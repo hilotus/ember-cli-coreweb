@@ -1,0 +1,20 @@
+{{#if primaryAction}}
+  <a class='button' {{action 'clickButton' primaryAction}}>
+    {{#if primaryAction.icon}}<i class="fa {{primaryAction.icon}}"></i>{{/if}}
+    {{primaryAction.label}}
+  </a>
+{{else}}
+  <a class='button'>{{label}}</a>
+{{/if}}
+<a class='button toggle' {{action 'toggle'}}></a>
+{{!-- options is dropdown button collections --}}
+<ul class='dropdown'>
+  {{#each optionsWithoutPrimaryAction as |option index|}}
+    <li>
+      <a {{action 'clickButton' option}}>
+        {{#if option.icon}}<i class="fa {{option.icon}}"></i>{{/if}}
+        {{option.label}}
+      </a>
+    </li>
+  {{/each}}
+</ul>

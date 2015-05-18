@@ -1,0 +1,40 @@
+.check-box {
+  position: relative;
+  outline: none;
+  cursor: pointer;
+  border: 0px none;
+  margin-right: 4px;
+  margin-left: 4px;
+  vertical-align: middle;
+  text-align: left;
+  height: 25px;
+  @include user-select(none);
+
+  .text {
+    padding-left: 15px;
+    white-space: nowrap;
+    line-height: 25px;
+    cursor: inherit
+  }
+
+  .box {
+    position: absolute;
+    height: 15px;
+    width: 15px;
+    top: 1px;
+    cursor: inherit;
+    font-size: 15px;
+    line-height: 25px;
+  }
+
+  &.focus .box { color: #3875d7 }
+
+  &.disabled {
+    cursor: not-allowed;
+    .box, .text { color: #939393 }
+  }
+
+  &:active {
+    .box, .text { color: #848484 }
+  }
+}
