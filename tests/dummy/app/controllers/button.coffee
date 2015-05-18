@@ -1,6 +1,8 @@
 `import Ember from 'ember'`
 
 ButtonController = Ember.Controller.extend
+  breadCrumb: 'Button'
+
   regularContent: Ember.computed ->
     self = @
     Ember.Object.create label: 'Regular', action: ->

@@ -1,6 +1,8 @@
 `import Ember from 'ember'`
 
 DropbuttonController = Ember.Controller.extend
+  breadCrumb: 'DropButton'
+
   optionsPrimary: Ember.computed ->
     self = @
     Ember.A(

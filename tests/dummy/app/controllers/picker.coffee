@@ -1,6 +1,8 @@
 `import Ember from 'ember'`
 
 PickerController = Ember.Controller.extend
+  breadCrumb: 'Picker'
+
   init: ->
     @tmpData = [
       Ember.Object.create(id: '111', name: '111')

@@ -5,9 +5,11 @@
 
 @import "base";
 @import "colorful";
+@import "modal";
 
 // Component
 @import "components/checkbox";
 @import "components/switchbox";
 @import "components/link_button";
 @import "components/select_picker";
+@import "components/alert_modal";

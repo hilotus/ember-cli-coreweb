@@ -27,7 +27,9 @@
     line-height: 25px;
   }
 
-  &.focus .box { color: #3875d7 }
+  &.focus {
+    .box, .text { color: #3875d7 }
+  }
 
   &.disabled {
     cursor: not-allowed;

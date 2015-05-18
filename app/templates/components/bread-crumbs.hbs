@@ -1,0 +1,16 @@
+{{#if breadcrumbHome}}
+  <li>{{#link-to breadcrumbHome.route}}{{breadcrumbHome.name}}{{/link-to}}</li>
+{{/if}}
+{{#each breadcrumb in breadcrumbs}}
+  <li class="{{if breadcrumb.active 'active'}}">
+    {{#if breadcrumb.active}}
+      {{breadcrumb.name}}
+    {{else}}
+      {{#if breadcrumb.model}}
+        {{#link-to breadcrumb.route breadcrumb.model.id}}{{breadcrumb.name}}{{/link-to}}
+      {{else}}
+        {{#link-to breadcrumb.route}}{{breadcrumb.name}}{{/link-to}}
+      {{/if}}
+    {{/if}}
+  </li>
+{{/each}}

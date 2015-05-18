@@ -1,0 +1,18 @@
+<div class="outer">
+  <div class="middle">
+    <div class="inner" style="width:380px;">
+      <div class="alert-modal {{alertType}}" tabindex="-1">
+        <h6 class="alert-title">{{title}}</h6>
+        <p>{{message}}</p>
+        <div class="alert-footer">
+          {{#if rightButton}}
+            {{link-button content=rightButton type='small' customClass="right"}}
+          {{/if}}
+          {{#if leftButton}}
+            {{link-button content=leftButton type='small' customClass="left"}}
+          {{/if}}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
