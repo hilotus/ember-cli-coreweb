@@ -18,13 +18,7 @@ AlertModalComponent = Ember.Component.extend
     if @buttons and @buttons.length > 0
       @buttons[0]
     else
-      self = @
-      Ember.Object.create
-        label: 'OK'
-        target: self
-        action: ->
-          @set 'isHidden', true
-
+      Ember.Object.create label: 'OK'
 
   leftButton: Ember.computed 'buttons', ->
     if @buttons and @buttons.length > 1 then @buttons[1] else null

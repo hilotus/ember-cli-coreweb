@@ -8,21 +8,48 @@ AlertModalMixin = Ember.Mixin.create
   message: ''
   isHidden: true
 
-  actions:
-    showAlert: (title, message, type, buttons) ->
-      @setProperties
-        title: title
-        message: message
-        type: type
-        buttons: buttons
-        isHidden: false
+  # ok right button label, default is 'OK'
+  okButtonLabel: 'OK'
+  okButtonIcon: ''
+  # cancel right button label, default is 'OK'
+  cancelButtonLabel: 'Cancel'
+  cancelButtonIcon: ''
 
-    closeAlert: ->
-      @setProperties
-        title: ''
-        message: ''
-        type: ''
-        buttons: []
-        isHidden: true
+  showAlertModal: (title, message, type, buttons) ->
+    @setProperties
+      title: title
+      message: message
+      type: type
+      buttons: buttons
+      isHidden: false
+
+  closeAlertModal: ->
+    @set 'isHidden', true
+    @setProperties
+      title: ''
+      message: ''
+      type: ''
+      buttons: []
+
+  actions:
+    showAlert: (title, message, type) ->
+      button = Ember.Object.create
+        label: @okButtonLabel
+        icon: @okButtonIcon
+        target: @
+        action: ->
+          @closeAlertModal()
+
+      @showAlertModal title, message, type, [button]
+
+    showConfirm: (title, message, type, okButton) ->
+      cancelButton = Ember.Object.create
+        label: @cancelButtonLabel
+        icon: @cancelButtonIcon
+        target: @
+        action: ->
+          @closeAlertModal()
+
+      @showAlertModal title, message, type, [okButton, cancelButton]
 
 `export default AlertModalMixin`

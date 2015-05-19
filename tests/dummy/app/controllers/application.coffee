@@ -8,12 +8,30 @@ ApplicationController = Ember.Controller.extend BreadCrumbs, AlertModal,
       route: 'application'
       name: 'Home'
 
+  okButtonLabel: 'OK'
+  okButtonIcon: ''
+  cancelButtonLabel: 'Cancel'
+  cancelButtonIcon: ''
+
   alertButton: Ember.computed ->
-    self = @
     Ember.Object.create
-      label: 'Show Alert'
-      target: self
+      label: 'Alert'
+      target: @
       action: ->
-        @send 'showAlert', 'Title', 'Message', 'check'
+        @send 'showAlert', 'Alert Title', 'Alert Message Alert Message Alert Message Alert Message Alert Message Alert Message Alert MessageAlert Message', 'check'
+
+  confirmButton: Ember.computed ->
+    Ember.Object.create
+      label: 'Confirm'
+      target: @
+      action: ->
+        button = Ember.Object.create
+          label: 'Confirm11'
+          target: @
+          action: ->
+            alert("I'm in application controller.")
+            @closeAlertModal()
+
+        @send 'showConfirm', 'Confirm Title', 'Confirm Message', 'warn', button
 
 `export default ApplicationController`
