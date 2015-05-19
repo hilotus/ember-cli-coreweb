@@ -866,7 +866,8 @@ a.button {
 }
 
 .button-dropdown.open>.dropdown {
-  display: block
+  visibility: visible;
+  opacity: 1;
 }
 
 .button-dropdown.open>.button {
@@ -878,7 +879,6 @@ a.button {
 }
 
 .dropdown {
-  display: none;
   position: absolute;
   top: 100%;
   left: 0;
@@ -888,8 +888,10 @@ a.button {
   background: #f8f8f8;
   border: 1px solid #ccc;
   border-radius: 0 0 3px 3px;
-  -webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.06);
-  box-shadow: 0 1px 1px rgba(0,0,0,0.06);
+  @include box-shadow(0 1px 1px rgba(0,0,0,0.06));
+  visibility: hidden;
+  opacity: 0;
+  @include transition(visibility 0.3s ease, opacity 0.3s ease);
   a { cursor: pointer }
 }
 

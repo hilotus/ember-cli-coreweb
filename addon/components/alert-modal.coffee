@@ -1,8 +1,8 @@
 `import Ember from 'ember'`
 
 AlertModalComponent = Ember.Component.extend
-  classNameBindings: [':modal', 'isHidden:hidden']
-  isHidden: true
+  classNameBindings: [':modal', 'isActive:modal-active']
+  isActive: true
 
   # check(default), error, warn, info
   type: 'check'

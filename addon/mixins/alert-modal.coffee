@@ -6,7 +6,7 @@ AlertModalMixin = Ember.Mixin.create
   buttons: []
   title: ''
   message: ''
-  isHidden: true
+  isActive: false
 
   # ok right button label, default is 'OK'
   okButtonLabel: 'OK'
@@ -21,10 +21,10 @@ AlertModalMixin = Ember.Mixin.create
       message: message
       type: type
       buttons: buttons
-      isHidden: false
+      isActive: true
 
   closeAlertModal: ->
-    @set 'isHidden', true
+    @set 'isActive', false
     @setProperties
       title: ''
       message: ''

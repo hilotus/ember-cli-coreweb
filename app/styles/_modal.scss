@@ -11,6 +11,8 @@
   // filter: alpha(opacity=50);
   overflow: auto;
   letter-spacing: 0em;
+  visibility: hidden;
+  &.modal-active { visibility: visible }
 
   .outer {
     display: table;

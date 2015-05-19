@@ -35,10 +35,13 @@
   display: block !important;
 }
 .invisible {
-  visibility: hidden;
+  visibility: hidden
+}
+.visible {
+  visibility: visible
 }
 .hidden, .hide {
-  display: none !important;
+  display: none;
 }
 .pointer {
   cursor: pointer

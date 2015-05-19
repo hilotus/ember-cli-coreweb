@@ -10,10 +10,12 @@
     border-top: 0;
     position: absolute;
     top: 31px;
-    left: -10000px;
     width: 100%;
     box-shadow: 0 4px 5px rgba(0,0,0,0.15);
     z-index: 100;
+    visibility: hidden;
+    opacity: 0;
+    @include transition(visibility 0.3s ease, opacity 0.3s ease);
     // fix bug: width is 100% - 2px
     @include box-sizing('border-box')
   }
@@ -167,6 +169,8 @@
   }
 
   .select-picker-drop {
+    visibility: visible;
+    opacity: 1;
     border-bottom-left-radius: 3px;
     border-bottom-right-radius: 3px;
   }

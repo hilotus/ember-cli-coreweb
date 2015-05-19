@@ -28,10 +28,6 @@ SelectPickerComponent = Ember.Component.extend
       name = @get('selection.name')
       if name then name else @prompt
 
-  isActiveChanged: Ember.observer 'isActive', ->
-    $drop = @.$('div.select-picker-drop')
-    if @isActive then $drop.css(left: '0px') else $drop.css(left: '-10000px')
-
   keywordsChanged: Ember.observer 'keywords', ->
     keywords = @keywords
     if keywords
