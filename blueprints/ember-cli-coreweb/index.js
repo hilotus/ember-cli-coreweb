@@ -5,8 +5,8 @@ module.exports = {
 
   afterInstall: function() {
     return this.addBowerPackagesToProject([
-      { name: 'pure' },
-      { name: 'font-awesome'}
+      { name: 'pure', target: '0.6.0' },
+      { name: 'font-awesome', target: '4.3.0' }
     ]);
   }
 };

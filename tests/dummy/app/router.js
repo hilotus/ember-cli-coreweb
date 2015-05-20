@@ -10,6 +10,7 @@ Router.map(function() {
   this.route('button');
   this.route('dropbutton');
   this.route('picker');
+  this.route('todos');
 });
 
 export default Router;

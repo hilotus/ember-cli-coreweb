@@ -1,0 +1,14 @@
+<div class="row">
+  {{input value=addValue}}
+  <button class="button" {{action 'add'}}>Add</button>
+</div>
+<div class="row">
+  <ul class="todo-list">
+    {{#each todo in model}}
+      <li>
+        {{input type="checkbox" checked=todo.isCompleted}}
+        {{todo.title}}
+      </li>
+    {{/each}}
+  </ul>
+</div>

@@ -4,6 +4,10 @@
 module.exports = {
   name: 'ember-cli-coreweb',
 
+  blueprintsPath: function() {
+    return path.join(__dirname, 'blueprints');
+  },
+
   included: function(app) {
     this._super.included(app);
 
@@ -19,5 +23,8 @@ module.exports = {
     app.import(app.bowerDirectory + '/font-awesome/fonts/fontawesome-webfont.woff2', {destDir: "fonts"});
     app.import(app.bowerDirectory + '/font-awesome/fonts/FontAwesome.otf', {destDir: "fonts"});
     app.import(app.bowerDirectory + '/font-awesome/css/font-awesome.min.css');
+
+    // css
+    app.import('vendor/styles/css/cw.css');
   }
 };

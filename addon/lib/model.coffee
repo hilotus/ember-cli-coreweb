@@ -98,7 +98,7 @@ Model = Ember.Object.extend
           v.get('id')
         tmpDataArr = self.get "modelData.#{key}"
         # returns true, both the arrays are same even if the elements are in different order.
-        changed = !($(tmpValue).not(tmpDataArr).length === 0 && $(tmpDataArr).not(tmpValue).length === 0)
+        changed = !($(tmpValue).not(tmpDataArr).length is 0 and $(tmpDataArr).not(tmpValue).length is 0)
       else
         changed = self.get key isnt self.get "modelData.#{key}"
         tmpValue = self.get key

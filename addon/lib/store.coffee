@@ -2,18 +2,19 @@
 
 __cache__ = {}
 
-`export __cache__`
+`export {__cache__}`
 
 Store = Ember.Object.extend
+  adapter: '-cw'
+
   find: (clazz, id={}) ->
     return @findById clazz, id if typeof id is 'string'
 
     clazz = @__getModelClazz clazz
-    adapter = @container.lookup 'adapter:cw'
     typeKey = clazz.typeKey
     self = @
 
-    adapter.find(clazz, id).then (json) ->
+    @adapterFor().find(clazz, id).then (json) ->
       Ember.RSVP.resolve json.results.map (result) ->
         self.push clazz, result
     , (reason) ->
@@ -21,13 +22,12 @@ Store = Ember.Object.extend
 
   findById: (clazz, id) ->
     clazz = @__getModelClazz clazz
-    adapter = @container.lookup 'adapter:cw'
     typeKey = clazz.typeKey
     self = @
 
     return Ember.RSVP.resolve record if __cache__[typeKey] and (record = __cache__[typeKey][id])
 
-    adapter.find(clazz, id).then (json) ->
+    @adapterFor().find(clazz, id).then (json) ->
       Ember.RSVP.resolve self.push(clazz, json)
     , (reason) ->
       Ember.RSVP.reject reason
@@ -36,7 +36,6 @@ Store = Ember.Object.extend
     throw new Ember.Error 'ids must be an array.' unless Ember.isArray ids
 
     clazz = @__getModelClazz clazz
-    adapter = @container.lookup 'adapter:cw'
     typeKey = clazz.typeKey
     records = []
     self = @
@@ -50,7 +49,7 @@ Store = Ember.Object.extend
         return Ember.RSVP.resolve records
 
     records = []
-    adapter.findByIds(clazz, ids).then (json) ->
+    @adapterFor().findByIds(clazz, ids).then (json) ->
       Ember.RSVP.resolve json.results.map (result) ->
         self.push clazz, result
     , (reason) ->
@@ -58,10 +57,8 @@ Store = Ember.Object.extend
 
   createRecord: (clazz, data) ->
     clazz = @__getModelClazz clazz
-    adapter = @container.lookup 'adapter:cw'
     self = @
-
-    adapter.createRecord(clazz, data).then (json) ->
+    @adapterFor().createRecord(clazz, data).then (json) ->
       data.id = json._id || json.objectId
       Ember.merge data, json
       Ember.RSVP.resolve data
@@ -70,19 +67,35 @@ Store = Ember.Object.extend
 
   updateRecord: (clazz, id, data) ->
     clazz = @__getModelClazz clazz
-    adapter = @container.lookup 'adapter:cw'
     self = @
-
-    adapter.updateRecord(clazz, id, data).then (json) ->
+    @adapterFor().updateRecord(clazz, id, data).then (json) ->
       Ember.RSVP.resolve json
     , (reason) ->
       Ember.RSVP.reject reason
 
   destroyRecord: (clazz, id) ->
     clazz = @__getModelClazz clazz
-    adapter = @container.lookup 'adapter:cw'
+    @adapterFor().destroyRecord(clazz, id).then ->
+      Ember.RSVP.resolve()
+    , (reason) ->
+      Ember.RSVP.reject reason
 
-    adapter.destroyRecord(clazz, id).then ->
+  # Batch Request
+  batch: (operations={}) ->
+    adapter = @adapterFor()
+    data = adapter.extractBatchData operations
+    self = @
+    adapter.batch(data.requests).then (json) ->
+      # json is an array.
+      json.forEach (r, i) ->
+        record = data.records[i]
+        unless $.isEmptyObject r.success  # create or update
+          if json.success.objectId or json.success._id
+            self.push record.constructor, json, record
+          else
+            self.reload record.getTypeKey(), json, record
+        else
+          self.pull record.getTypeKey(), record.get('id')
       Ember.RSVP.resolve()
     , (reason) ->
       Ember.RSVP.reject reason
@@ -114,6 +127,12 @@ Store = Ember.Object.extend
   pull: (typeKey, id) ->
     if __cache__[typeKey][id]
       delete __cache__[typeKey][id]
+
+  adapterFor: ->
+    adapter = @container.lookup 'adapter:application'
+    unless adapter
+      adapter = @container.lookup "adapter:#{@adapter}"
+    adapter
 
   # set model properties
   # schema: {
