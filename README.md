@@ -11,4 +11,7 @@
       2. retrieve data changed notification from server.
 
       Issus: There is a issus about this solution
-      1.
+
+* Build && Publish:
+    `npm add user`
+    `npm publish`
