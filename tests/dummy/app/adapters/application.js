@@ -1,8 +1,8 @@
 import Ember from 'ember';
 
 export default CW.Adapter.extend({
-  applicationId: '4f3ATEailRoi1A49sh4vlNppWKk8G8xf6ThymKkG',
-  restApiKey: 'm2CUMzzcTkqZLTR2v7BVbXLIg9vAzqAxWYVUvyjm',
+  applicationId: 'wtNLUgvPog1VS9FAKKWUFxuPQ02Cc1sj8i78Qpay',
+  restApiKey: 'pTqPLCSFVBlidQ8V2mEBW45ORhtKiDw6nE853Ny9',
 
   host: "https://api.parse.com",
   namespace: '1',

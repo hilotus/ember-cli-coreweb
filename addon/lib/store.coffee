@@ -1,11 +1,16 @@
 `import Ember from 'ember'`
 
 __cache__ = {}
-
-`export {__cache__}`
+__queryCache__ = {}
 
 Store = Ember.Object.extend
   adapter: '-cw'
+
+  adapterFor: ->
+    adapter = @container.lookup 'adapter:application'
+    unless adapter
+      adapter = @container.lookup "adapter:#{@adapter}"
+    adapter
 
   find: (clazz, id={}) ->
     return @findById clazz, id if typeof id is 'string'
@@ -14,9 +19,15 @@ Store = Ember.Object.extend
     typeKey = clazz.typeKey
     self = @
 
+    if (records = @__getFromCache typeKey, id)
+      return Ember.RSVP.resolve records
+
     @adapterFor().find(clazz, id).then (json) ->
-      Ember.RSVP.resolve json.results.map (result) ->
+      records = json.results.map (result) ->
         self.push clazz, result
+      self.__setToCache typeKey, id, records
+
+      Ember.RSVP.resolve records
     , (reason) ->
       Ember.RSVP.reject reason
 
@@ -25,7 +36,8 @@ Store = Ember.Object.extend
     typeKey = clazz.typeKey
     self = @
 
-    return Ember.RSVP.resolve record if __cache__[typeKey] and (record = __cache__[typeKey][id])
+    if (record = @__getFromCache typeKey, id)
+      return Ember.RSVP.resolve record
 
     @adapterFor().find(clazz, id).then (json) ->
       Ember.RSVP.resolve self.push(clazz, json)
@@ -128,12 +140,6 @@ Store = Ember.Object.extend
     if __cache__[typeKey][id]
       delete __cache__[typeKey][id]
 
-  adapterFor: ->
-    adapter = @container.lookup 'adapter:application'
-    unless adapter
-      adapter = @container.lookup "adapter:#{@adapter}"
-    adapter
-
   # set model properties
   # schema: {
   #   'belongTo': {'creator': 'user', 'category': 'term'},
@@ -188,8 +194,8 @@ Store = Ember.Object.extend
     json.id = json.id or json._id or json.objectId
     delete json._id
     delete json.objectId
+    __cache__[clazz.typeKey] = {} unless __cache__[clazz.typeKey]
 
-    __cache__[clazz.typeKey] = __cache__[clazz.typeKey] || {};
     if Ember.isNone(record)
       unless __cache__[clazz.typeKey][json.id] # Only there is no cache, create a nre record.
         record = clazz.create()
@@ -203,7 +209,27 @@ Store = Ember.Object.extend
     record
 
   # find from cache
-  __findFromCache: (typeKey, query) ->
+  # query: json condition or record id
+  __getFromCache: (typeKey, query={}) ->
+    __queryCache__[typeKey] = {} unless __queryCache__[typeKey]
+    __cache__[typeKey] = {} unless __cache__[typeKey]
 
+    if $.isPlainObject query
+      __queryCache__[typeKey][JSON.stringify(query)]
+    else if !Ember.isBlank(query)
+      __cache__[typeKey][query]
+    else
+      throw new Ember.Error 'query must be json or inempty string.'
+
+  __setToCache: (typeKey, query={}, records=[]) ->
+    __queryCache__[typeKey] = {} unless __queryCache__[typeKey]
+
+    if $.isPlainObject query
+      __queryCache__[typeKey][JSON.stringify(query)] = records
+    else
+      throw new Ember.Error 'query must be json.'
+
+`export {__cache__}`
+`export {__queryCache__}`
 
 `export default Store`

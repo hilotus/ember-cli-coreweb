@@ -40,7 +40,7 @@ Model = Ember.Object.extend
     @set 'status', 'persistent'
 
   setVal: (keyName, value) ->
-    throw new Error 'You can not set value for distroyed record.' if @get('isDistroyed')
+    throw new Ember.Error 'You can not set value for distroyed record.' if @get('isDistroyed')
 
     # 1. value is a Model instance, get value's id
     # 2. value is a Array, get it's element(ids) array.
@@ -60,7 +60,7 @@ Model = Ember.Object.extend
     @
 
   setVals: (values) ->
-    throw new Error 'You can not set value for distroyed record.' if @get('isDistroyed')
+    throw new Ember.Error 'You can not set value for distroyed record.' if @get('isDistroyed')
 
     self = @
     for key, value of values
@@ -76,7 +76,6 @@ Model = Ember.Object.extend
   getCapitalizeTypeKey: ->
     @constructor.typeKey.classify()
 
-
   getChanges: ->
     belongTo = hasMany = []
     schema = @constructor.schema
@@ -91,7 +90,7 @@ Model = Ember.Object.extend
 
     for key, value of @modelData
       if belongTo.contains key
-        changed = self.get "#{key}.id" isnt self.get "modelData.#{key}"
+        changed = self.get("#{key}.id") isnt self.get("modelData.#{key}")
         tmpValue = self.get "#{key}.id"
       else if hasMany.contains key
         tmpValue = self.get(key).map (v) ->
@@ -100,7 +99,7 @@ Model = Ember.Object.extend
         # returns true, both the arrays are same even if the elements are in different order.
         changed = !($(tmpValue).not(tmpDataArr).length is 0 and $(tmpDataArr).not(tmpValue).length is 0)
       else
-        changed = self.get key isnt self.get "modelData.#{key}"
+        changed = self.get(key) isnt self.get("modelData.#{key}")
         tmpValue = self.get key
 
       if changed
@@ -119,19 +118,19 @@ Model = Ember.Object.extend
 
   # commit all changes
   commitChanges: ->
-    unless !@get('isPersistent')
+    unless @get('isPersistent')
       @discardChanges()
-      throw new Error 'You can not commit an unpersistent record.'
+      throw new Ember.Error 'You can not commit an unpersistent record.'
 
     @clearChanges()
     changes = @getChanges()
-    if !$.isEmptyObject(changes)
-      @set 'changeData', changes
-      @save()
-    Ember.RSVP.reject {error: 'There are no changes.'}
+    Ember.RSVP.reject {error: 'There are no changes.'} if $.isEmptyObject(changes)
+    @set 'changeData', changes
+    @save()
+
 
   save: ->
-    throw new Error('You can not save distroyed record.') if @get('isDistroyed')
+    throw new Ember.Error('You can not save distroyed record.') if @get('isDistroyed')
 
     clazz = @constructor
     self = @
