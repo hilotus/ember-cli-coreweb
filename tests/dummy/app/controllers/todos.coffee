@@ -5,6 +5,9 @@ TodosController = Ember.Controller.extend
   breadCrumb: 'CW Frameworks'
   addValue: ''
 
+  buttonDisabled: Ember.computed 'addValue', ->
+    !@addValue
+
   actions:
     add: ->
       self = @
@@ -16,8 +19,16 @@ TodosController = Ember.Controller.extend
       todo.save().then((record) ->
         self.model.pushObject record
       ).catch((reason) ->
-        self.container.lookup('controller:application').send 'showAlert', 'Errors occur', reason.error, 'error'
+        self.am 'Errors occur', reason.error, 'error'
       ).finally ->
         self.set 'addValue', ''
+
+    del: (todo) ->
+      self = @
+      todo.delete().then(->
+        self.model.removeObject todo
+      ).catch((reason) ->
+        self.am 'Errors occur', reason.error, 'error'
+      )
 
 `export default TodosController`

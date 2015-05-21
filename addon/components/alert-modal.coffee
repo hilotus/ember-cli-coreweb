@@ -2,17 +2,18 @@
 
 AlertModalComponent = Ember.Component.extend
   classNameBindings: [':modal', 'isActive:modal-active']
-  isActive: true
+  isActiveBinding: 'content.isActive'
+  typeBinding: 'content.type'
+  buttonsBinding: 'content.buttons'
+  titleBinding: 'content.title'
+  messageBinding: 'content.message'
 
-  # check(default), error, warn, info
-  type: 'check'
   alertType: Ember.computed 'type', ->
-    "alert-#{@type}"
+    if @type then "alert-#{@type}" else "alert-check"
 
-  # Ember.Object.create(label: 'OK', icon: fs-user, action: ..., target: self)
-  buttons: []
-  title: ''
-  message: ''
+  # type: check(default), error, warn, info
+  # button: Ember.Object.create(label: 'OK', icon: fs-user, action: ..., target: self)
+  content: null
 
   rightButton: Ember.computed 'buttons', ->
     if @buttons and @buttons.length > 0

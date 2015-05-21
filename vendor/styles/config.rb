@@ -23,3 +23,8 @@ javascripts_dir = "js"
 # preferred_syntax = :sass
 # and then run:
 # sass-convert -R --from scss --to sass sass scss && rm -rf sass && mv scss sass
+
+# Usage
+# compass create project_name
+# compass compile --output-style compressed
+# compass watch --output-style compressed

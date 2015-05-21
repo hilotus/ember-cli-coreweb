@@ -2,12 +2,6 @@
 
 # Use in Application Controller.
 AlertModalMixin = Ember.Mixin.create
-  type: 'check'
-  buttons: []
-  title: ''
-  message: ''
-  isActive: false
-
   # ok right button label, default is 'OK'
   okButtonLabel: 'OK'
   okButtonIcon: ''
@@ -15,21 +9,30 @@ AlertModalMixin = Ember.Mixin.create
   cancelButtonLabel: 'Cancel'
   cancelButtonIcon: ''
 
+  alertContent: null
+
+  init: ->
+    @_super()
+    @set 'alertContent', Ember.Object.create()
+    @set 'alertContent.type', 'check'
+    @set 'alertContent.buttons', []
+    @set 'alertContent.title', ''
+    @set 'alertContent.message', ''
+    @set 'alertContent.isActive', false
+
   showAlertModal: (title, message, type, buttons) ->
-    @setProperties
-      title: title
-      message: message
-      type: type
-      buttons: buttons
-      isActive: true
+    @set 'alertContent.type', type
+    @set 'alertContent.buttons', buttons
+    @set 'alertContent.title', title
+    @set 'alertContent.message', message
+    @set 'alertContent.isActive', true
 
   closeAlertModal: ->
-    @set 'isActive', false
-    @setProperties
-      title: ''
-      message: ''
-      type: ''
-      buttons: []
+    @set 'alertContent.isActive', false
+    @set 'alertContent.type', 'check'
+    @set 'alertContent.buttons', []
+    @set 'alertContent.title', ''
+    @set 'alertContent.message', ''
 
   actions:
     showAlert: (title, message, type) ->

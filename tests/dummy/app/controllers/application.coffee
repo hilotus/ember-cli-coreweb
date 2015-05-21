@@ -18,7 +18,7 @@ ApplicationController = Ember.Controller.extend BreadCrumbs, AlertModal,
       label: 'Alert'
       target: @
       action: ->
-        @send 'showAlert', 'Alert Title', 'Alert Message Alert Message Alert Message Alert Message Alert Message Alert Message Alert MessageAlert Message', 'check'
+        @am 'Alert Title', 'Alert Message Alert Message Alert Message Alert Message Alert Message Alert Message Alert MessageAlert Message', 'check'
 
   confirmButton: Ember.computed ->
     Ember.Object.create
@@ -32,6 +32,6 @@ ApplicationController = Ember.Controller.extend BreadCrumbs, AlertModal,
             alert("I'm in application controller.")
             @closeAlertModal()
 
-        @send 'showConfirm', 'Confirm Title', 'Confirm Message', 'warn', button
+        @cm 'Confirm Title', 'Confirm Message', 'warn', button
 
 `export default ApplicationController`

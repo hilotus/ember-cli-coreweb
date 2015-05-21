@@ -149,7 +149,7 @@ Model = Ember.Object.extend
         self.discardChanges()
         Ember.RSVP.reject reason
 
-  destroyRecord: ->
+  delete: ->
     clazz = @constructor
     self = @
     return @store.destroyRecord(clazz, @get('id')).then ->
