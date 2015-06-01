@@ -23,8 +23,5 @@ module.exports = {
     app.import(app.bowerDirectory + '/font-awesome/fonts/fontawesome-webfont.woff2', {destDir: "fonts"});
     app.import(app.bowerDirectory + '/font-awesome/fonts/FontAwesome.otf', {destDir: "fonts"});
     app.import(app.bowerDirectory + '/font-awesome/css/font-awesome.min.css');
-
-    // css
-    app.import('vendor/styles/css/cw.css');
   }
 };
