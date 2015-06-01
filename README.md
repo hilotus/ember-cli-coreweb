@@ -15,3 +15,7 @@
 * Build && Publish:
     `npm add user`
     `npm publish`
+
+* Usage
+  `npm install --save-dev ember-cli-corweb`
+  `ember g ember-cli-coreweb`

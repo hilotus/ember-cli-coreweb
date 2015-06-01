@@ -11,6 +11,7 @@ Router.map(function() {
   this.route('dropbutton');
   this.route('picker');
   this.route('todos');
+  this.route('markdowneditor');
 });
 
 export default Router;
