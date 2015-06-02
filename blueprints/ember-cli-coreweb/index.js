@@ -4,22 +4,18 @@ module.exports = {
   normalizeEntityName: function() {},
 
   afterInstall: function() {
-    return this.addBowerPackagesToProject([
-      'pure',
-      'font-awesome',
-      'markdown-it',
-      'markdown-it-footnote',
-      'highlightjs',
-      'codemirror',
-      'emojify.js'
-      // { name: 'pure', target: '0.6.0' },
-      // { name: 'font-awesome', target: '4.3.0' },
-      // { name: 'markdown-it', target: '4.2.1' },
-      // { name: 'markdown-it-footnote', target: '1.0.0' },
-      // { name: 'highlightjs', target: '8.5.0' },
-      // { name: 'codemirror', target: '5.3.0' },
-      // { name: 'emojify.js', target: '1.0.2' },
-      // { name: 'font-awesome', target: '4.3.0' }
-    ]);
+    var self = this;
+
+    return self.addBowerPackageToProject('pure', '~0.6.0').then(function(){
+      return self.addBowerPackageToProject('font-awesome', '~4.3.0');
+    }).then(function(){
+      return self.addBowerPackageToProject('markdown-it', '~4.2.1');
+    }).then(function(){
+      return self.addBowerPackageToProject('markdown-it-footnote', '~1.0.0');
+    }).then(function(){
+      return self.addBowerPackageToProject('codemirror', '~5.3.0');
+    }).then(function(){
+      return self.addBowerPackageToProject('emojify.js', '~1.0.2');
+    });
   }
 };
