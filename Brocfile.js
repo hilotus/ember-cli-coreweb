@@ -12,6 +12,4 @@ var EmberAddon = require('ember-cli/lib/broccoli/ember-addon');
 */
 var app = new EmberAddon();
 
-app.import('vendor/styles/css/cw.css');
-
 module.exports = app.toTree();

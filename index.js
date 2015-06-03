@@ -37,5 +37,8 @@ module.exports = {
     app.import(app.bowerDirectory + '/codemirror/mode/htmlmixed/htmlmixed.js');
     app.import(app.bowerDirectory + '/codemirror/addon/edit/continuelist.js');
     app.import(app.bowerDirectory + '/codemirror/theme/base16-light.css');
+
+    // css
+    app.import('vendor/styles/css/cw.css');
   }
 };
