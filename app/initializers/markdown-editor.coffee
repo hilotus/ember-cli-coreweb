@@ -1,6 +1,6 @@
 `import Ember from 'ember'`
 
-initialize = (container, application) ->
+initialize = (registry, application) ->
   languageOverrides =
     js: 'javascript'
     html: 'xml'

@@ -1,14 +1,12 @@
 `import Ember from 'ember'`
 
 __cache__ = {}
-__queryCache__ = {}
 
 Store = Ember.Object.extend
   adapter: '-cw'
 
   adapterFor: ->
-    adapter = @container.lookup 'adapter:application'
-    unless adapter
+    unless (adapter = @container.lookup 'adapter:application')
       adapter = @container.lookup "adapter:#{@adapter}"
     adapter
 
@@ -19,14 +17,9 @@ Store = Ember.Object.extend
     typeKey = clazz.typeKey
     self = @
 
-    if (records = @__getFromCache typeKey, id)
-      return Ember.RSVP.resolve records
-
     @adapterFor().find(clazz, id).then (json) ->
       records = json.results.map (result) ->
         self.push clazz, result
-      self.__setToCache typeKey, id, records
-
       Ember.RSVP.resolve records
     , (reason) ->
       Ember.RSVP.reject reason
@@ -36,7 +29,7 @@ Store = Ember.Object.extend
     typeKey = clazz.typeKey
     self = @
 
-    if (record = @__getFromCache typeKey, id)
+    if (record = __cache__[typeKey][id])
       return Ember.RSVP.resolve record
 
     @adapterFor().find(clazz, id).then (json) ->
@@ -168,10 +161,15 @@ Store = Ember.Object.extend
   # record: model instance
   # typeKey: model id
   # key: model column name
-  # value: model column value
-  __normalizeHasMany: (record, typeKey, key, value) ->
-    this.findByIds(typeKey, value).then (records) ->
-      record.set key, records
+  # values: is an ids array
+  __normalizeHasMany: (record, typeKey, key, values) ->
+    # @findByIds(typeKey, values).then (records) ->
+    #   record.set key, records
+    self = @
+    record.set key, []
+    values.forEach (value) ->
+      self.find(typeKey, value).then (r) ->
+        record.get(key).pushObject(r);
 
   # data: model column value
   __normalizeEmbedded: (data) ->
@@ -208,28 +206,5 @@ Store = Ember.Object.extend
     @__normalize record, record.get('modelData')
     record
 
-  # find from cache
-  # query: json condition or record id
-  __getFromCache: (typeKey, query={}) ->
-    __queryCache__[typeKey] = {} unless __queryCache__[typeKey]
-    __cache__[typeKey] = {} unless __cache__[typeKey]
-
-    if $.isPlainObject query
-      __queryCache__[typeKey][JSON.stringify(query)]
-    else if !Ember.isBlank(query)
-      __cache__[typeKey][query]
-    else
-      throw new Ember.Error 'query must be json or inempty string.'
-
-  __setToCache: (typeKey, query={}, records=[]) ->
-    __queryCache__[typeKey] = {} unless __queryCache__[typeKey]
-
-    if $.isPlainObject query
-      __queryCache__[typeKey][JSON.stringify(query)] = records
-    else
-      throw new Ember.Error 'query must be json.'
-
 `export {__cache__}`
-`export {__queryCache__}`
-
 `export default Store`

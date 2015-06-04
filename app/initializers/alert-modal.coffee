@@ -2,7 +2,7 @@
 `import Alert from 'ember-cli-coreweb/utils/alert'`
 `import Confirm from 'ember-cli-coreweb/utils/confirm'`
 
-initialize = (container, application) ->
+initialize = (registry, application) ->
   application.register 'utils:am', Alert
   application.inject 'route', 'am', 'utils:am'
   application.inject 'model', 'am', 'utils:am'
