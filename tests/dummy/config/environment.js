@@ -24,8 +24,8 @@ module.exports = function(environment) {
       'script-src': "'self' 'unsafe-eval'",
       'font-src': "'self' http://fonts.gstatic.com", // Allow fonts to be loaded from http://fonts.gstatic.com
       // 'connect-src': "'self' https://api.mixpanel.com http://custom-api.local", // Allow data (ajax/websocket) from api.mixpanel.com and custom-api.local
-      'connect-src': "'self' http://localhost:9292 https://api.parse.com",
-      'img-src': "'self' data: http://lotus-assets.qiniudn.com http://7rf345.com1.z0.glb.clouddn.com",
+      'connect-src': "'self' https://api.parse.com",
+      'img-src': "'self' data:",
       'style-src': "'self' 'unsafe-inline' http://fonts.googleapis.com", // Allow inline styles and loaded CSS from http://fonts.googleapis.com
       'media-src': "'self'"
     }

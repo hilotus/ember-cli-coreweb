@@ -25,7 +25,6 @@ module.exports = {
     app.import(app.bowerDirectory + '/markdown-it-footnote/dist/markdown-it-footnote.min.js');
     app.import(app.bowerDirectory + '/highlightjs/highlight.pack.js');
     app.import(app.bowerDirectory + '/highlightjs/styles/default.css');
-    app.import(app.bowerDirectory + '/emojify.js/dist/js/emojify.min.js');
     app.import(app.bowerDirectory + '/codemirror/lib/codemirror.js');
     app.import(app.bowerDirectory + '/codemirror/lib/codemirror.css');
     app.import(app.bowerDirectory + '/codemirror/addon/mode/overlay.js');

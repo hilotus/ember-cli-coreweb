@@ -12,7 +12,7 @@ MarkdownPreviewComponent = Ember.Component.extend
     out = @.$()[0]
     old = out.cloneNode(true)
     out.innerHTML = @container.lookup('utils:md').render(@body)
-    emojify.run(out);
+    # emojify.run(out);
 
     allold = old.getElementsByTagName("*");
     return if allold is undefined

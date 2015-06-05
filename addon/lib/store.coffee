@@ -86,6 +86,8 @@ Store = Ember.Object.extend
       Ember.RSVP.reject reason
 
   # Batch Request
+  # Reference: https://www.parse.com/docs/rest#objects-batch
+  # operations: {creates: [], updates: [], destroys: []}
   batch: (operations={}) ->
     adapter = @adapterFor()
     data = adapter.extractBatchData operations

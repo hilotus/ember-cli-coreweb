@@ -15,8 +15,6 @@ module.exports = {
     }).then(function(){
       return self.addBowerPackageToProject('codemirror', '~5.3.0');
     }).then(function(){
-      return self.addBowerPackageToProject('emojify.js', '~1.0.2');
-    }).then(function(){
       return self.addBowerPackageToProject('highlightjs', '~8.5.0');
     });
   }

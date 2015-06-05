@@ -5,7 +5,7 @@ initialize = (registry, application) ->
     js: 'javascript'
     html: 'xml'
 
-  emojify.setConfig img_dir: 'http://7rf345.com1.z0.glb.clouddn.com/emojify.js/dist/images/base'
+  # emojify.setConfig img_dir: 'http://7rf345.com1.z0.glb.clouddn.com/emojify.js/dist/images/base'
 
   md = markdownit(
     highlight: (code, lang) ->
