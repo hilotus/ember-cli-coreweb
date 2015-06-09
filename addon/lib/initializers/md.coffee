@@ -1,6 +1,6 @@
 `import Ember from 'ember'`
 
-initialize = (registry, application) ->
+initializeMD = (registry, application) ->
   languageOverrides =
     js: 'javascript'
     html: 'xml'
@@ -19,8 +19,4 @@ initialize = (registry, application) ->
 
   application.register 'utils:md', md, {instantiate: false, singleton: true}
 
-MarkdownEditorInitializer =
-  nalerte: 'markdown-editor'
-  initialize: initialize
-
-`export default MarkdownEditorInitializer`
+`export default initializeMD`

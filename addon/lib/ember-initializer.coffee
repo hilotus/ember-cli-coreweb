@@ -24,6 +24,21 @@ Ember.onLoad 'Ember.Application', (Application) ->
     before: 'store'
     initialize: K
 
+  Application.initializer
+    name: 'alertModal'
+    before: 'store'
+    initialize: K
+
+  Application.initializer
+    name: 'InjectAlertModal'
+    before: 'store'
+    initialize: K
+
+  Application.initializer
+    name: 'markdownEditor'
+    before: 'store'
+    initialize: K
+
   Application.instanceInitializer
     name: 'injectModel'
     initialize: (instance) ->
