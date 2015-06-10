@@ -1,8 +1,8 @@
 `import Ember from 'ember'`
-`import BreadCrumbs from 'ember-cli-coreweb/mixins/bread-crumbs'`
-`import AlertModal from 'ember-cli-coreweb/mixins/alert-modal'`
+`import BreadCrumbsMixin from 'ember-cli-coreweb/mixins/bread-crumbs'`
+`import AlertModalMixin from 'ember-cli-coreweb/mixins/alert-modal'`
 
-ApplicationController = Ember.Controller.extend BreadCrumbs, AlertModal,
+ApplicationController = Ember.Controller.extend BreadCrumbsMixin, AlertModalMixin,
   breadcrumbHome: Ember.computed ->
     Ember.Object.create
       route: 'application'

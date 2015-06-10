@@ -3,7 +3,7 @@
 `import Confirm from 'ember-cli-coreweb/utils/confirm'`
 
 initializeAlertModal = (registry, application) ->
-  application.register 'utils:am', Alert
-  application.register 'utils:cm', Confirm
+  application.register 'modal:alert', Alert
+  application.register 'modal:confirm', Confirm
 
 `export default initializeAlertModal`
