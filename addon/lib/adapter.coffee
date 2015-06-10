@@ -6,7 +6,7 @@ Adapter = Ember.Object.extend
   find: (clazz, id) ->
     return @findById clazz, id if typeof id is "string"
 
-    clazz = @getClassTypeKey clazz
+    clazz = @getClassTypeKey clazz, 'find'
     # id is a query json
     @ajax clazz, "GET", data: id
 
@@ -32,7 +32,7 @@ Adapter = Ember.Object.extend
   # id: record id
   # data: json data for update
   updateRecord: (clazz, id, data) ->
-    clazz = @getClassTypeKey clazz
+    clazz = @getClassTypeKey clazz, 'updateRecord'
     @ajax clazz + "/" + id, "PUT", data: data
 
   # clazz: model class
@@ -76,7 +76,7 @@ Adapter = Ember.Object.extend
 
     requests: requests, records: records
 
-  getClassTypeKey: (clazz) ->
+  getClassTypeKey: (clazz, method) ->
     if typeof clazz isnt "string"
       clazz.typeKey.classify()
     else
