@@ -9,4 +9,14 @@ initializeAlertModalInjections = (registry) ->
   registry.injection 'component', 'cm', 'modal:confirm'
   registry.injection 'controller', 'cm', 'modal:confirm'
 
+  registry.injection 'route', 'spin', 'modal:spin'
+  registry.injection 'model', 'spin', 'modal:spin'
+  registry.injection 'component', 'spin', 'modal:spin'
+  registry.injection 'controller', 'spin', 'modal:spin'
+
+  registry.injection 'route', 'unspin', 'modal:unspin'
+  registry.injection 'model', 'unspin', 'modal:unspin'
+  registry.injection 'component', 'unspin', 'modal:unspin'
+  registry.injection 'controller', 'unspin', 'modal:unspin'
+
 `export default initializeAlertModalInjections`

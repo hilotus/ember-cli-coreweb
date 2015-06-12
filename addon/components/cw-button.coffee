@@ -21,7 +21,7 @@ CWButtonComponent = Ember.Component.extend
   shape: ''
   isDisabled: false
 
-  # Ember.Object.create(label: 'OK', icon: fs-user, action: ..., target: self)
+  # Ember.Object.create(label: 'OK', leftIcon: fs-user, rightIcon: fs-user, action: ..., target: self)
   content: null
 
   click: ->

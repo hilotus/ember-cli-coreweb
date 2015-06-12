@@ -8,7 +8,7 @@ LinkButtonComponent = Ember.Component.extend
   isDisabled: false
   customClass: ''
 
-  # Ember.Object.create(label: 'OK', icon: fs-user, action: ..., target: self)
+  # Ember.Object.create(label: 'OK', leftIcon: fs-user, rightIcon: fs-user, action: ..., target: self)
   content: null
 
   click: ->

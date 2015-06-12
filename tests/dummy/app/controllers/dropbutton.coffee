@@ -7,11 +7,11 @@ DropbuttonController = Ember.Controller.extend
     self = @
     Ember.A(
       [
-        Ember.Object.create label: 'Button1', target: self, icon: 'fa-user', primary: true, action: ->
+        Ember.Object.create label: 'Button1', target: self, leftIcon: 'fa-user', primary: true, action: ->
           alert('Button1')
         Ember.Object.create label: 'Button2', target: self, action: ->
           alert('Button2')
-        Ember.Object.create label: 'Button3', target: self, action: ->
+        Ember.Object.create label: 'Button3', target: self, rightIcon: 'fa-user', action: ->
           alert('Button3')
       ]
     )
@@ -22,7 +22,7 @@ DropbuttonController = Ember.Controller.extend
       [
         Ember.Object.create label: 'Button1', target: self, action: ->
           alert('Button1')
-        Ember.Object.create label: 'Button2', target: self, icon: 'fa-user', action: ->
+        Ember.Object.create label: 'Button2', target: self, rightIcon: 'fa-user', action: ->
           alert('Button2')
         Ember.Object.create label: 'Button3', target: self, action: ->
           alert('Button3')

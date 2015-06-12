@@ -5,7 +5,7 @@ ButtonController = Ember.Controller.extend
 
   regularContent: Ember.computed ->
     self = @
-    Ember.Object.create label: 'Regular', action: ->
+    Ember.Object.create label: 'Regular', rightIcon: 'fa-user', action: ->
 
   hugeContent: Ember.computed ->
     self = @
@@ -17,7 +17,7 @@ ButtonController = Ember.Controller.extend
 
   smallContent: Ember.computed ->
     self = @
-    Ember.Object.create label: 'Small', icon: 'fa-user', action: ->
+    Ember.Object.create label: 'Small', leftIcon: 'fa-user', action: ->
 
   tinyContent: Ember.computed ->
     self = @
@@ -26,5 +26,13 @@ ButtonController = Ember.Controller.extend
   buttonContent: Ember.computed ->
     self = @
     Ember.Object.create label: 'Button', action: ->
+
+  leftIconButtonContent: Ember.computed ->
+    self = @
+    Ember.Object.create label: 'Button', leftIcon: 'fa-user', action: ->
+
+  rightIconButtonContent: Ember.computed ->
+    self = @
+    Ember.Object.create label: 'Button', rightIcon: 'fa-user', action: ->
 
 `export default ButtonController`

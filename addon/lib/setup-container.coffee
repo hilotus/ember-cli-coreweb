@@ -4,7 +4,6 @@
 
 `import initializeAlertModal from 'ember-cli-coreweb/lib/initializers/alert-modal'`
 `import initializeAlertModalInjections from 'ember-cli-coreweb/lib/initializers/alert-modal-injections'`
-
 `import initializeMDEditor from 'ember-cli-coreweb/lib/initializers/md'`
 
 setupContainer = (container, application) ->

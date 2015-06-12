@@ -15,7 +15,7 @@ DropButtonComponent = Ember.Component.extend
   label: 'Actions'
 
   # options: [
-  #   Ember.Object.create({ label: 'Save', action: 'save', target: self, icon: 'fa-user' }),
+  #   Ember.Object.create({ label: 'Save', action: 'save', target: self, leftIcon: fs-user, rightIcon: fs-user }),
   #   Ember.Object.create({ label: 'Delete', target: self, action: delete' }),
   #   Ember.Object.create({ label: 'Edit', target: self, action: 'edit' })
   # ]

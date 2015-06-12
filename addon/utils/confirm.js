@@ -3,8 +3,8 @@ import Ember from 'ember';
 function Confirm(attributes) {
   this.container = attributes.container;
   this.confirm = function(title, message, type, okButton) {
-    var appCtrl = this.container.lookup('controller:application');
-    appCtrl.send('showConfirm', title, message, type, okButton);
+    var ctrl = this.container.lookup('controller:application');
+    ctrl.send('showConfirm', title, message, type, okButton);
   };
 }
 

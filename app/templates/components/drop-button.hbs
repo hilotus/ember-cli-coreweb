@@ -1,7 +1,8 @@
 {{#if primaryAction}}
   <a class='button' {{action 'clickButton' primaryAction}}>
-    {{#if primaryAction.icon}}<i class="fa {{primaryAction.icon}}"></i>{{/if}}
+    {{#if primaryAction.leftIcon}}<i class="fa {{primaryAction.leftIcon}}"></i>{{/if}}
     {{primaryAction.label}}
+    {{#if primaryAction.rightIcon}}<i class="fa {{primaryAction.rightIcon}}"></i>{{/if}}
   </a>
 {{else}}
   <a class='button'>{{label}}</a>
@@ -12,8 +13,9 @@
   {{#each optionsWithoutPrimaryAction as |option index|}}
     <li>
       <a {{action 'clickButton' option}}>
-        {{#if option.icon}}<i class="fa {{option.icon}}"></i>{{/if}}
+        {{#if option.leftIcon}}<i class="fa {{option.leftIcon}}"></i>{{/if}}
         {{option.label}}
+        {{#if option.rightIcon}}<i class="fa {{option.rightIcon}}"></i>{{/if}}
       </a>
     </li>
   {{/each}}

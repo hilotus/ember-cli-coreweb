@@ -12,7 +12,7 @@ AlertModalComponent = Ember.Component.extend
     if @type then "alert-#{@type}" else "alert-check"
 
   # type: check(default), error, warn, info
-  # button: Ember.Object.create(label: 'OK', icon: fs-user, action: ..., target: self)
+  # button: Ember.Object.create(label: 'OK', leftIcon: fs-user, rightIcon: fs-user, action: ..., target: self)
   content: null
 
   rightButton: Ember.computed 'buttons', ->
