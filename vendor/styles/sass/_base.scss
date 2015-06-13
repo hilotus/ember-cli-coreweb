@@ -101,9 +101,7 @@
   `-moz-` prefix version is omitted.
   */
   display: -webkit-flex;
-  -webkit-flex-flow: row wrap;
 
   /* IE10 uses display: flexbox */
   display: -ms-flexbox;
-  -ms-flex-flow: row wrap;
 }
