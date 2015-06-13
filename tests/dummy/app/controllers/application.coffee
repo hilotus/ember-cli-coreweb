@@ -19,19 +19,19 @@ ApplicationController = Ember.Controller.extend BreadCrumbsMixin, AlertModalMixi
       @am 'Alert Title', 'Alert Message Alert Message Alert Message Alert Message Alert Message Alert Message Alert MessageAlert Message', 'check'
 
     confirmModal: ->
-      button = Ember.Object.create
-        label: 'Confirm11'
+      button =
+        label: 'Confirm'
         target: @
         action: ->
           alert("I'm in application controller.")
-          @closeAlertModal()
+          @closeModal()
 
       @cm 'Confirm Title', 'Confirm Message', 'warn', button
 
     spinModal: ->
       @spin 'Loading...'
       Ember.run.later @, ->
-        @unspin()
+        @closeSpinner()
       , 2000
 
 `export default ApplicationController`

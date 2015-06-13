@@ -49,4 +49,7 @@ AlertModalMixin = Ember.Mixin.create
 
       @showAlertModal title, message, type, [okButton, cancelButton]
 
+    closeModal: ->
+      @closeAlertModal()
+
 `export default AlertModalMixin`
