@@ -89,6 +89,14 @@
 }
 
 .row {
+  text-rendering: optimizespeed;
+  display: -webkit-flex;
+  -webkit-flex-flow: row wrap;
+  display: -ms-flexbox;
+  -ms-flex-flow: row wrap;
+  -ms-align-content: flex-start;
+  -webkit-align-content: flex-start;
+  align-content: flex-start;
   /* Webkit: collapse white-space between units */
   // letter-spacing: -0.31em;
 
@@ -102,11 +110,9 @@
   `-moz-` prefix version is omitted.
   */
   display: -webkit-flex;
-  -webkit-flex-flow: row wrap;
 
   /* IE10 uses display: flexbox */
   display: -ms-flexbox;
-  -ms-flex-flow: row wrap;
 
   -ms-align-content: flex-start;
   -webkit-align-content: flex-start;
