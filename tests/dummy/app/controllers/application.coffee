@@ -14,35 +14,24 @@ ApplicationController = Ember.Controller.extend BreadCrumbsMixin, AlertModalMixi
   cancelButtonLabel: 'Cancel'
   cancelButtonIcon: ''
 
-  alertButton: Ember.computed ->
-    Ember.Object.create
-      label: 'Alert'
-      target: @
-      action: ->
-        @am 'Alert Title', 'Alert Message Alert Message Alert Message Alert Message Alert Message Alert Message Alert MessageAlert Message', 'check'
+  actions:
+    alertModal: ->
+      @am 'Alert Title', 'Alert Message Alert Message Alert Message Alert Message Alert Message Alert Message Alert MessageAlert Message', 'check'
 
-  confirmButton: Ember.computed ->
-    Ember.Object.create
-      label: 'Confirm'
-      target: @
-      action: ->
-        button = Ember.Object.create
-          label: 'Confirm11'
-          target: @
-          action: ->
-            alert("I'm in application controller.")
-            @closeAlertModal()
+    confirmModal: ->
+      button = Ember.Object.create
+        label: 'Confirm11'
+        target: @
+        action: ->
+          alert("I'm in application controller.")
+          @closeAlertModal()
 
-        @cm 'Confirm Title', 'Confirm Message', 'warn', button
+      @cm 'Confirm Title', 'Confirm Message', 'warn', button
 
-  spinButton: Ember.computed ->
-    Ember.Object.create
-      label: 'Spinner'
-      target: @
-      action: ->
-        @spin 'Loading...'
-        Ember.run.later @, ->
-          @unspin()
-        , 2000
+    spinModal: ->
+      @spin 'Loading...'
+      Ember.run.later @, ->
+        @unspin()
+      , 2000
 
 `export default ApplicationController`

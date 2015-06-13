@@ -1,49 +1,49 @@
 <div style="height:60px;">
   <div><span class="label label-primary">Link Button</span></div>
-  {{link-button content=hugeContent type="huge"}}
-  {{link-button content=largeContent type="large"}}
-  {{link-button content=regularContent}}
-  {{link-button content=smallContent type="small"}}
-  {{link-button content=tinyContent type="tiny"}}
-  {{link-button content=regularContent isDisabled=true}}
+  {{link-button label="huge" type="huge" action="save"}}
+  {{link-button label="large" type="large" action="save"}}
+  {{link-button label="regular"}}
+  {{link-button label="small" type="small" action="save"}}
+  {{link-button label="tiny" type="tiny" action="save"}}
+  {{link-button label="disabled" isDisabled=true action="save"}}
 </div>
 
 <div style="height:60px;">
   <div><span class="label label-primary">Default Button</span></div>
-  {{cw-button content=leftIconButtonContent}}
-  {{cw-button content=rightIconButtonContent shape="round"}}
-  {{cw-button content=buttonContent shape="left"}}
-  {{cw-button content=buttonContent shape="right"}}
+  {{cw-button leftIcon="fa-user" label="Button" action="save"}}
+  {{cw-button label="Button" shape="round"}}
+  {{cw-button label="Button" shape="left"}}
+  {{cw-button label="Button" shape="right"}}
 </div>
 
 <div style="height:60px;">
   <div><span class="label label-primary">Red Button</span></div>
-  {{cw-button content=buttonContent color="red"}}
-  {{cw-button content=buttonContent shape="round" color="red"}}
-  {{cw-button content=buttonContent shape="left" color="red"}}
-  {{cw-button content=rightIconButtonContent shape="right" color="red"}}
+  {{cw-button label="Button" color="red"}}
+  {{cw-button label="Button" shape="round" color="red"}}
+  {{cw-button label="Button" shape="left" color="red"}}
+  {{cw-button label="Button" rightIcon="fa-user" shape="right" color="red"}}
 </div>
 
 <div style="height:60px;">
   <div><span class="label label-primary">Blue Button</span></div>
-  {{cw-button content=buttonContent color="blue"}}
-  {{cw-button content=leftIconButtonContent shape="round" color="blue"}}
-  {{cw-button content=buttonContent shape="left" color="blue"}}
-  {{cw-button content=buttonContent shape="right" color="blue"}}
+  {{cw-button label="Button" color="blue"}}
+  {{cw-button label="Button" shape="round" color="blue"}}
+  {{cw-button label="Button" shape="left" color="blue"}}
+  {{cw-button label="Button" leftIcon="fa-user" shape="right" color="blue"}}
 </div>
 
 <div style="height:60px;">
   <div><span class="label label-primary">Green Button</span></div>
-  {{cw-button content=buttonContent color="green"}}
-  {{cw-button content=leftIconButtonContent shape="round" color="green"}}
-  {{cw-button content=buttonContent shape="left" color="green"}}
-  {{cw-button content=buttonContent shape="right" color="green"}}
+  {{cw-button label="Button" color="green"}}
+  {{cw-button label="Button" shape="round" color="green"}}
+  {{cw-button label="Button" shape="left" color="green"}}
+  {{cw-button label="Button" rightIcon="fa-user" shape="right" color="green"}}
 </div>
 
 <div style="height:60px;">
   <div><span class="label label-primary">Disbaled Button</span></div>
-  {{cw-button content=buttonContent isDisabled=true}}
-  {{cw-button content=buttonContent shape="round" color="red" isDisabled=true}}
-  {{cw-button content=rightIconButtonContent shape="left" color="blue" isDisabled=true}}
-  {{cw-button content=buttonContent shape="right" color="green" isDisabled=true}}
+  {{cw-button label="Button" isDisabled=true}}
+  {{cw-button label="Button" shape="round" color="red" isDisabled=true}}
+  {{cw-button label="Button" leftIcon="fa-user" shape="left" color="blue" isDisabled=true}}
+  {{cw-button label="Button" shape="right" color="green" isDisabled=true}}
 </div>

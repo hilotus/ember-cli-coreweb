@@ -254,11 +254,7 @@ input:checked+.checkbox:before,input:checked+.radio:before {
   height: 3px;
   border: solid #9b9795;
   border-width: 0 0 3px 3px;
-  -webkit-transform: rotate(-45deg);
-  -moz-transform: rotate(-45deg);
-  -ms-transform: rotate(-45deg);
-  -o-transform: rotate(-45deg);
-  transform: rotate(-45deg)
+  @include transform(rotate(-45deg))
 }
 
 .radio {
@@ -388,11 +384,7 @@ input:checked+.checkbox:before,input:checked+.radio:before {
   height: 4px;
   border: solid #508f29;
   border-width: 0 0 3px 3px;
-  -webkit-transform: rotate(-45deg);
-  -moz-transform: rotate(-45deg);
-  -ms-transform: rotate(-45deg);
-  -o-transform: rotate(-45deg);
-  transform: rotate(-45deg)
+  @include transform(rotate(-45deg))
 }
 
 .invalid>input {
@@ -418,11 +410,7 @@ input:checked+.checkbox:before,input:checked+.radio:before {
 }
 
 .invalid:after {
-  -webkit-transform: rotate(-45deg);
-  -moz-transform: rotate(-45deg);
-  -ms-transform: rotate(-45deg);
-  -o-transform: rotate(-45deg);
-  transform: rotate(-45deg)
+  @include transform(rotate(-45deg))
 }
 
 .lt-ie9 .valid:before,.lt-ie9 .valid:after,.lt-ie9 .invalid:before,.lt-ie9 .invalid:after {
@@ -569,7 +557,14 @@ a.button {
   height: 22px;
   background-color: inherit;
   border: 1px solid;
-  border-color: inherit
+  border-color: inherit;
+  border-bottom-color: transparent
+}
+.button-left:before {
+  border-right-color: transparent
+}
+.button-right:before {
+  border-left-color: transparent
 }
 
 .button.button-left:active,.button-dropdown.open>.button-left.toggle,.button.button-right:active,.button-dropdown.open>.button-right.toggle {
@@ -592,11 +587,7 @@ a.button {
 .button-left:before {
   left: -11px;
   border-radius: 2px 5px 0 5px;
-  -webkit-transform: rotate(-45deg);
-  -moz-transform: rotate(-45deg);
-  -ms-transform: rotate(-45deg);
-  -o-transform: rotate(-45deg);
-  transform: rotate(-45deg)
+  @include transform(rotate(-45deg))
 }
 
 .button-right {

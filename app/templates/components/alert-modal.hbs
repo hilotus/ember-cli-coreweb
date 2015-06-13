@@ -6,10 +6,10 @@
         <p>{{message}}</p>
         <div class="alert-footer">
           {{#if rightButton}}
-            {{link-button content=rightButton type='tiny' customClass="right"}}
+            {{link-button label=rightButton.label action=rightButton.action target=rightButton.target type='tiny' customClass="right"}}
           {{/if}}
           {{#if leftButton}}
-            {{link-button content=leftButton type='tiny' customClass="left"}}
+            {{link-button label=leftButton.label action=leftButton.action target=leftButton.target type='tiny' customClass="left"}}
           {{/if}}
         </div>
       </div>

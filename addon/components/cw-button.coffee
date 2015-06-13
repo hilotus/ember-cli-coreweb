@@ -21,12 +21,14 @@ CWButtonComponent = Ember.Component.extend
   shape: ''
   isDisabled: false
 
-  # Ember.Object.create(label: 'OK', leftIcon: fs-user, rightIcon: fs-user, action: ..., target: self)
-  content: null
+  label: ''
+  leftIcon: null
+  rightIcon: null
+  action: null
 
-  click: ->
+  click: (event) ->
+    event.preventDefault()
     unless @isDisabled
-      if @content and $.isFunction(@content.action)
-        @content.action.call(@content.target)
+      @sendAction('action', @get('context'))
 
 `export default CWButtonComponent`

@@ -2,7 +2,7 @@ import Ember from 'ember';
 
 function Unspin(attributes) {
   this.container = attributes.container;
-  this.unspin = function(label) {
+  this.unspin = function() {
     var ctrl = this.container.lookup('controller:application');
     ctrl.send('closeSpinner');
   };

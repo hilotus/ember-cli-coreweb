@@ -8,12 +8,20 @@ LinkButtonComponent = Ember.Component.extend
   isDisabled: false
   customClass: ''
 
-  # Ember.Object.create(label: 'OK', leftIcon: fs-user, rightIcon: fs-user, action: ..., target: self)
-  content: null
+  label: ''
+  leftIcon: null
+  rightIcon: null
+  action: null
+  # if target is null, the action is in actions: {},
+  # otherwise, the action is in target.
+  target: null
 
-  click: ->
+  click: (event) ->
+    event.preventDefault()
     unless @isDisabled
-      if @content and $.isFunction(@content.action)
-        @content.action.call(@content.target)
+      if Ember.isBlank @target
+        @sendAction('action', @get('context'))
+      else
+        @action.call(@target)
 
 `export default LinkButtonComponent`
