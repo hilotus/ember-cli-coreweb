@@ -29,7 +29,7 @@ Store = Ember.Object.extend
     typeKey = clazz.typeKey
     self = @
 
-    if (record = __cache__[typeKey][id])
+    if __cache__[typeKey] and (record = __cache__[typeKey][id])
       return Ember.RSVP.resolve record
 
     @adapterFor().find(clazz, id).then (json) ->
