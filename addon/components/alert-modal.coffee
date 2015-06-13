@@ -1,7 +1,7 @@
 `import Ember from 'ember'`
 
 AlertModalComponent = Ember.Component.extend
-  classNameBindings: [':modal', 'isActive:modal-active']
+  classNameBindings: [':modal', 'isActive:modal-active:hidden']
   isActiveBinding: 'content.isActive'
   typeBinding: 'content.type'
   buttonsBinding: 'content.buttons'
