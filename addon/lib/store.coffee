@@ -110,12 +110,13 @@ Store = Ember.Object.extend
   # push record(s) into store
   # clazz: string / model class
   push: (clazz, json, record) ->
+    self = @
     if Ember.isArray json
       records = []
       json.map (j) ->
-        @__push clazz, j, record
+        self.__push clazz, j, record
     else
-      @__push clazz, json, record
+      self.__push clazz, json, record
 
   # Update a record in cache
   # record: modle instance/model id

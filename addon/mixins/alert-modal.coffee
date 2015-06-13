@@ -4,11 +4,8 @@
 AlertModalMixin = Ember.Mixin.create
   # ok right button label, default is 'OK'
   okButtonLabel: 'OK'
-  okButtonIcon: ''
-
   # cancel right button label, default is 'OK'
   cancelButtonLabel: 'Cancel'
-  cancelButtonIcon: ''
 
   alertContent: null
 
@@ -38,8 +35,7 @@ AlertModalMixin = Ember.Mixin.create
   actions:
     showAlert: (title, message, type) ->
       button =
-        label: @okButtonLabel
-        icon: @okButtonIcon
+        label: @get('okButtonLabel')
         target: @
         action: @closeAlertModal
 
@@ -47,8 +43,7 @@ AlertModalMixin = Ember.Mixin.create
 
     showConfirm: (title, message, type, okButton) ->
       cancelButton =
-        label: @cancelButtonLabel
-        icon: @cancelButtonIcon
+        label: @get('cancelButtonLabel')
         target: @
         action: @closeAlertModal
 
