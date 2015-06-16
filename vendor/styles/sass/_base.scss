@@ -49,12 +49,6 @@
 .inline {
   display: inline
 }
-.sidebar {
-  padding: 0 10px 10px 10px;
-}
-.content {
-  padding: 0 10px 10px 10px;
-}
 
 .container {
   padding-right: 15px;
@@ -62,16 +56,19 @@
   margin-right: auto;
   margin-left: auto;
 }
+
 @media (min-width: 768px) {
   .container {
     width: 750px;
   }
 }
+
 @media (min-width: 992px) {
   .container {
     width: 970px;
   }
 }
+
 @media (min-width: 1200px) {
   .container {
     width: 1170px;
@@ -86,35 +83,4 @@
 
 .container-center {
   @include centre()
-}
-
-.row {
-  text-rendering: optimizespeed;
-  display: -webkit-flex;
-  -webkit-flex-flow: row wrap;
-  display: -ms-flexbox;
-  -ms-flex-flow: row wrap;
-  -ms-align-content: flex-start;
-  -webkit-align-content: flex-start;
-  align-content: flex-start;
-  /* Webkit: collapse white-space between units */
-  // letter-spacing: -0.31em;
-
-  /* Webkit: fixes text-rendering: optimizeLegibility */
-  text-rendering: optimizespeed;
-
-  /*
-  Use flexbox when possible to avoid `letter-spacing` side-effects.
-
-  NOTE: Firefox (as of 25) does not currently support flex-wrap, so the
-  `-moz-` prefix version is omitted.
-  */
-  display: -webkit-flex;
-
-  /* IE10 uses display: flexbox */
-  display: -ms-flexbox;
-
-  -ms-align-content: flex-start;
-  -webkit-align-content: flex-start;
-  align-content: flex-start;
 }
