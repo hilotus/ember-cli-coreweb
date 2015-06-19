@@ -5,12 +5,7 @@ AdapterParse = Adapter.extend
     clazz = @_super clazz, method
 
     if clazz.match(/User/)
-      if method is 'find'
-        "_#{clazz}"
-      else if method is 'findById' or method is 'updateRecord'
-        "users"
-      else
-        clazz
+      "users"
     else
       clazz
 
