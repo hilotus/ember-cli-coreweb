@@ -84,11 +84,3 @@
 .container-center {
   @include centre()
 }
-
-// override some css
-.pure-g [class *="pure-u"] {
-  font-family: ".HelveticaNeueDeskInterface-Regular"
-}
-input,textarea,select,button,label {
-  font-family: ".HelveticaNeueDeskInterface-Regular" !important
-}
