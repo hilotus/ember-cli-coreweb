@@ -1,5 +1,5 @@
 <div class="container" style="padding: 15px;">
-  <div class="row page-header">
+  <div class="pure-g page-header">
     <div class="pure-u-1-2">
       {{bread-crumbs breadcrumbs=breadcrumbs breadcrumbHome=breadcrumbHome}}
     </div>
@@ -9,9 +9,9 @@
       {{cw-button label="Spinner" color="red" action="spinModal"}}
     </div>
   </div>
-  <div class="row">
+  <div class="pure-g">
     <div class="pure-u-1 pure-u-md-1-4">
-      <div class="sidebar">
+      <div style="padding: 0 10px;">
         <div class="nav">
           <div class="nav-header">
             <h3>{{#link-to 'index'}}Dummy{{/link-to}}</h3>
@@ -23,12 +23,13 @@
             <li>{{#link-to 'picker'}}Picker{{/link-to}}</li>
             <li>{{#link-to 'todos'}}CW{{/link-to}}</li>
             <li>{{#link-to 'markdowneditor'}}MarkdownEditor{{/link-to}}</li>
+            <li>{{#link-to 'inputs'}}Inputs{{/link-to}}</li>
           </ul>
         </div>
       </div>
     </div>
     <div class="pure-u-1 pure-u-md-3-4">
-      <div class="content">{{outlet}}</div>
+      <div style="padding: 0 10px;">{{outlet}}</div>
     </div>
   </div>
 </div>

@@ -46,7 +46,7 @@ table {
 input,textarea,select,button,label {
   margin: 0;
   line-height: normal;
-  font-family: inherit;
+  // font-family: inherit;
   font-size: 100%;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -61,7 +61,7 @@ input,textarea,select,button,label {
 body {
   font: 12px/21px "Lucida Grande",Verdana,Arial,sans-serif;
   color: #404040;
-  // background: #fafaf4;
+  background: #fafaf4;
 }
 
 a {
