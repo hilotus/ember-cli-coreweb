@@ -84,3 +84,7 @@
 .container-center {
   @include centre()
 }
+
+.pure-g [class *="pure-u"] {
+  font-family: ".HelveticaNeueDeskInterface-Regular"
+}
