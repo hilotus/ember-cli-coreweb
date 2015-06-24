@@ -5,12 +5,13 @@
     [http://reefpoints.dockyard.com/2015/03/22/tips-for-writing-ember-addons.html](http://reefpoints.dockyard.com/2015/03/22/tips-for-writing-ember-addons.html)
 
 * TODO:
-    One. I cached query Results on browser. If the query conditions is same as past one, it'll not call qeury api.
-      There are two way to call api to refresh the cache:
-      1. click refresh button.
-      2. retrieve data changed notification from server.
+  1. I cached query Results on browser. If the query conditions is same as past one, it'll not call qeury api.
+    There are two way to call api to refresh the cache:
+    a. click refresh button.
+    b. retrieve data changed notification from server.
 
-      Issus: There is a issus about this solution
+* ISSUE:
+    1. select-picker is disappear in firefox!!!
 
 * Build && Publish:
     `npm add user`

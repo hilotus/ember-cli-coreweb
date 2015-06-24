@@ -156,7 +156,8 @@ textarea {
   width: 6px;
   height: 6px;
   border: 2px solid #aaa;
-  border-radius: 8px
+  border-radius: 8px;
+  @include box-sizing(content-box)
 }
 
 .search:after {
@@ -168,13 +169,9 @@ textarea {
   height: 2px;
   background: #aaa;
   border-radius: 1px;
-  -webkit-transform: rotate(45deg);
-  -moz-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
-  -o-transform: rotate(45deg);
-  transform: rotate(45deg);
-  -webkit-box-shadow: -1px 0 #aaa;
-  box-shadow: -1px 0 #aaa
+  @include transform(rotate(45deg));
+  @include box-shadow(-1px 0 #aaa);
+  @include box-sizing(content-box)
 }
 
 input[type=search] {
