@@ -6,9 +6,7 @@ module.exports = {
   afterInstall: function() {
     var self = this;
 
-    return self.addBowerPackageToProject('pure', '~0.6.0').then(function(){
-      return self.addBowerPackageToProject('font-awesome', '~4.3.0');
-    }).then(function(){
+    return self.addBowerPackageToProject('font-awesome', '~4.3.0').then(function(){
       return self.addBowerPackageToProject('markdown-it', '~4.2.1');
     }).then(function(){
       return self.addBowerPackageToProject('markdown-it-footnote', '~1.0.0');

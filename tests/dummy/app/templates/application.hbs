@@ -1,35 +1,33 @@
-<div class="container" style="padding: 15px;">
-  <div class="pure-g page-header">
-    <div class="pure-u-1-2">
+<div class="container">
+  <div class="page-header row">
+    <div class="col-xs-6">
       {{bread-crumbs breadcrumbs=breadcrumbs breadcrumbHome=breadcrumbHome}}
     </div>
-    <div class="pure-u-1-2">
+    <div class="col-xs-6">
       {{cw-button label="Alert" color="green" action="alertModal"}}
       {{cw-button label="Confirm" color="blue" action="confirmModal"}}
       {{cw-button label="Spinner" color="red" action="spinModal"}}
     </div>
   </div>
-  <div class="pure-g">
-    <div class="pure-u-1 pure-u-md-1-4">
-      <div style="padding: 0 10px;">
-        <div class="nav">
-          <div class="nav-header">
-            <h3>{{#link-to 'index'}}Dummy{{/link-to}}</h3>
-          </div>
-          <ul class="nav-stacked">
-            <li>{{#link-to 'checkbox'}}Checkbox{{/link-to}}</li>
-            <li>{{#link-to 'button'}}Button{{/link-to}}</li>
-            <li>{{#link-to 'dropbutton'}}Drop Button{{/link-to}}</li>
-            <li>{{#link-to 'picker'}}Picker{{/link-to}}</li>
-            <li>{{#link-to 'todos'}}CW{{/link-to}}</li>
-            <li>{{#link-to 'markdowneditor'}}MarkdownEditor{{/link-to}}</li>
-            <li>{{#link-to 'inputs'}}Inputs{{/link-to}}</li>
-          </ul>
+  <div class="row">
+    <div class="col-xs-12 col-md-4">
+      <div class="nav">
+        <div class="nav-header">
+          <h3>{{#link-to 'index'}}Dummy{{/link-to}}</h3>
         </div>
+        <ul class="nav-stacked">
+          <li>{{#link-to 'checkbox'}}Checkbox{{/link-to}}</li>
+          <li>{{#link-to 'button'}}Button{{/link-to}}</li>
+          <li>{{#link-to 'dropbutton'}}Drop Button{{/link-to}}</li>
+          <li>{{#link-to 'picker'}}Picker{{/link-to}}</li>
+          <li>{{#link-to 'todos'}}CW{{/link-to}}</li>
+          <li>{{#link-to 'markdowneditor'}}MarkdownEditor{{/link-to}}</li>
+          <li>{{#link-to 'inputs'}}Inputs{{/link-to}}</li>
+        </ul>
       </div>
     </div>
-    <div class="pure-u-1 pure-u-md-3-4">
-      <div style="padding: 0 10px;">{{outlet}}</div>
+    <div class="col-xs-12 col-md-8">
+      <div class="row">{{outlet}}</div>
     </div>
   </div>
 </div>

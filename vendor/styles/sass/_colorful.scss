@@ -363,19 +363,19 @@ input:checked+.checkbox:before,input:checked+.radio:before {
   position: relative
 }
 
-.valid>input:focus,.invalid>input:focus {
+input.valid:focus,input.invalid:focus {
   position: relative;
   z-index: 2
 }
 
-.valid>input {
+input.valid {
   color: #435c26;
   text-shadow: 0 1px rgba(255,255,255,0.3);
   background: #ddfabf;
   border-color: #7ba845 #89bc4d #89bc4d
 }
 
-.valid:before {
+input.valid:before {
   content: '';
   position: absolute;
   top: 9px;
@@ -387,14 +387,14 @@ input:checked+.checkbox:before,input:checked+.radio:before {
   @include transform(rotate(-45deg))
 }
 
-.invalid>input {
+input.invalid {
   color: #833230;
   text-shadow: 0 1px rgba(255,255,255,0.3);
   background: #fbd3c4;
   border-color: #e55d48 #e5725a #e5725a
 }
 
-.invalid:before,.invalid:after {
+input.invalid:before,input.invalid:after {
   content: '';
   position: absolute;
   top: 8px;
@@ -409,7 +409,7 @@ input:checked+.checkbox:before,input:checked+.radio:before {
   transform: rotate(45deg)
 }
 
-.invalid:after {
+input.invalid:after {
   @include transform(rotate(-45deg))
 }
 

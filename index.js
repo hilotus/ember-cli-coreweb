@@ -7,10 +7,6 @@ module.exports = {
   included: function(app) {
     this._super.included(app);
 
-    // pure css
-    app.import(app.bowerDirectory + '/pure/grids-min.css');
-    app.import(app.bowerDirectory + '/pure/grids-responsive-min.css');
-
     // font awesome
     app.import(app.bowerDirectory + '/font-awesome/fonts/fontawesome-webfont.ttf', {destDir: "fonts"});
     app.import(app.bowerDirectory + '/font-awesome/fonts/fontawesome-webfont.eot', {destDir: "fonts"});

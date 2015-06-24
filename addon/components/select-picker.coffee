@@ -2,10 +2,15 @@
 
 # please specify width in this class
 SelectPickerComponent = Ember.Component.extend
-  classNameBindings: [":select-picker", "isActive:select-picker-active", "customClass"]
+  classNameBindings: [":select-picker", "isActive:select-picker-active"]
   isActive: false
-  # Custome css class
-  customClass: ""
+
+  # Custome width
+  width: ""
+
+  attributeBindings: ['style']
+  style: Ember.computed 'width', ->
+    (if @width.includes('%') then "width:#{@width};" else "width:#{width}px;").htmlSafe()
 
   # placeholder title
   prompt: ""
