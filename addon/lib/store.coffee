@@ -150,11 +150,11 @@ Store = Ember.Object.extend
       else if !Ember.isNone schema.hasMany[key]
         @__normalizeHasMany record, schema.hasMany[key], key, value
       else
-        record.set key, @__normalizeEmbedded value
+        record.set key, @__normalizeNormal value
     record
 
   # record: model instance
-  # typeKey: model id
+  # typeKey: model type key
   # key: model column name
   # value: model column value
   __normalizeBelongTo: (record, typeKey, key, value) ->
@@ -162,24 +162,19 @@ Store = Ember.Object.extend
       record.set key, r
 
   # record: model instance
-  # typeKey: model id
+  # typeKey: model type key
   # key: model column name
   # values: is an ids array
   __normalizeHasMany: (record, typeKey, key, values) ->
-    # @findByIds(typeKey, values).then (records) ->
-    #   record.set key, records
-    self = @
-    record.set key, []
-    values.forEach (value) ->
-      self.find(typeKey, value).then (r) ->
-        record.get(key).pushObject(r);
+    @findByIds(typeKey, values).then (records) ->
+      record.set key, records
 
   # data: model column value
-  __normalizeEmbedded: (data) ->
+  __normalizeNormal: (data) ->
     if $.isPlainObject data  # check value is json data.
       v = Ember.Object.create();
       for key, value of data
-        v.set key, @__normalizeEmbedded value
+        v.set key, @__normalizeNormal value
       v
     else
       data

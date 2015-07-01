@@ -12,7 +12,7 @@ LinkButtonComponent = Ember.Component.extend
   leftIcon: null
   rightIcon: null
   action: null
-  # if target is null, the action is in actions: {},
+  # if target is null, the action is in actions of controller: {},
   # otherwise, the action is in target.
   target: null
 
