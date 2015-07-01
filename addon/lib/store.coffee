@@ -166,8 +166,13 @@ Store = Ember.Object.extend
   # key: model column name
   # values: is an ids array
   __normalizeHasMany: (record, typeKey, key, values) ->
-    @findByIds(typeKey, values).then (records) ->
-      record.set key, records
+    # @findByIds(typeKey, values).then (records) ->
+    #   record.set key, records
+    self = @
+    record.set key, []
+    values.forEach (value) ->
+      self.find(typeKey, value).then (r) ->
+        record.get(key).pushObject(r);
 
   # data: model column value
   __normalizeNormal: (data) ->
