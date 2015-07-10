@@ -9,7 +9,7 @@
       {{cw-button label="Spinner" color="red" action="spinModal"}}
     </div>
   </div>
-  <div class="row" style="padding:0 5px 0 5px;">
+  <div class="row">
     <div class="col-xs-12 col-md-4">
       <div class="nav">
         <div class="nav-header">
@@ -23,11 +23,12 @@
           <li>{{#link-to 'todos'}}CW{{/link-to}}</li>
           <li>{{#link-to 'markdowneditor'}}MarkdownEditor{{/link-to}}</li>
           <li>{{#link-to 'inputs'}}Inputs{{/link-to}}</li>
+          <li>{{#link-to 'calendar'}}Calendar{{/link-to}}</li>
         </ul>
       </div>
     </div>
     <div class="col-xs-12 col-md-8">
-      <div class="row" style="padding:0 10px 0 10px;">{{outlet}}</div>
+      <div class="row" style="padding:0 10px 0 10px">{{outlet}}</div>
     </div>
   </div>
 </div>

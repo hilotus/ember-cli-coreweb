@@ -1,7 +1,7 @@
 {{#if breadcrumbHome}}
   <li>{{#link-to breadcrumbHome.route}}{{breadcrumbHome.name}}{{/link-to}}</li>
 {{/if}}
-{{#each breadcrumb in breadcrumbs}}
+{{#each breadcrumbs as |breadcrumb|}}
   <li class="{{if breadcrumb.active 'active'}}">
     {{#if breadcrumb.active}}
       {{breadcrumb.name}}

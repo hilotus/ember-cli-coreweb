@@ -1,12 +1,11 @@
 `import Ember from 'ember'`
 `import Todo from 'dummy/models/todo'`
 
-TodosController = Ember.ArrayController.extend
+TodosController = Ember.Controller.extend
   breadCrumb: 'CW Frameworks'
   addValue: ''
 
   model: []
-  itemController: 'todo'
 
   buttonDisabled: Ember.computed 'addValue', ->
     !@addValue

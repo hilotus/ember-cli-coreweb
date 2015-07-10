@@ -13,6 +13,7 @@ Router.map(function() {
   this.route('todos');
   this.route('markdowneditor');
   this.route('inputs');
+  this.route('calendar');
 });
 
 export default Router;
