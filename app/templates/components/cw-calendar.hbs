@@ -1,26 +1,24 @@
 <div class="cal-title row">
   <div class="col-xs-6 cal-title-left">
-    <div class="day">24</div>
-    <div class="month">January</div>
+    <div class="cal-title-date">{{date}}</div>
+    <div class="cal-title-month">{{monthName}}</div>
   </div>
   <div class="col-xs-6 cal-title-right">
-    <div class="year">
-      <i class="fa fa-calendar"></i>
-      <span>2015</span>
+    <div class="row">
+      <div class="col-xs-6 cal-title-cn-year">
+        {{cnCalendar.stemBranch}}
+        {{cnCalendar.animal}}
+      </div>
+      <div class="col-xs-6 cal-title-year">
+        {{year}}
+      </div>
     </div>
-    <ul class="monthes row">
-      <li class="col-sm-2 col-xs-4 sel">JAN</li>
-      <li class="col-sm-2 col-xs-4">FEB</li>
-      <li class="col-sm-2 col-xs-4">MAR</li>
-      <li class="col-sm-2 col-xs-4">APR</li>
-      <li class="col-sm-2 col-xs-4">MAY</li>
-      <li class="col-sm-2 col-xs-4">JUN</li>
-      <li class="col-sm-2 col-xs-4">JUL</li>
-      <li class="col-sm-2 col-xs-4">AUG</li>
-      <li class="col-sm-2 col-xs-4">SEP</li>
-      <li class="col-sm-2 col-xs-4">OCT</li>
-      <li class="col-sm-2 col-xs-4">NOV</li>
-      <li class="col-sm-2 col-xs-4">DEC</li>
+    <ul class="cal-title-monthes row">
+      {{#each monthOptions as |option index|}}
+        <li class="col-sm-2 col-xs-4 {{cal-selected-month index month 'sel'}}" {{action 'selectMonth' index}}>
+          {{option}}
+        </li>
+      {{/each}}
     </ul>
   </div>
 </div>
@@ -28,61 +26,19 @@
   <table class="col-xs-12">
     <thead>
       <tr>
-        <td>MON</td>
-        <td>TUE</td>
-        <td>WED</td>
-        <td>THU</td>
-        <td>FRI</td>
-        <td class="cal-holiday">SAT</td>
-        <td class="cal-holiday">SUN</td>
+        {{#each weekOptions as |option index|}}
+          <td class="{{is-gt index 4 'cal-holiday'}}">{{option}}</td>
+        {{/each}}
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td class="cal-past-month"><span data-day="29" data-cn-day="九月初一"></span></td>
-        <td class="cal-past-month"><span data-day="30" data-cn-day="九月初一"></span></td>
-        <td class="cal-past-month"><span data-day="31" data-cn-day="九月初一"></span></td>
-        <td><span data-day="01" data-cn-day="九月初一"></span></td>
-        <td><span data-day="02" data-cn-day="九月初一"></span></td>
-        <td class="cal-holiday"><span data-day="03" data-cn-day="九月初一"></span></td>
-        <td class="cal-holiday"><span data-day="04" data-cn-day="九月初一"></span></td>
-      </tr>
-      <tr>
-        <td><span data-day="05" data-cn-day="九月初一"></span></td>
-        <td><span data-day="06" data-cn-day="九月初一"></span></td>
-        <td><span data-day="07" data-cn-day="九月初一"></span></td>
-        <td><span data-day="08" data-cn-day="九月初一"></span></td>
-        <td><span data-day="09" data-cn-day="九月初一"></span></td>
-        <td class="cal-holiday"><span data-day="10" data-cn-day="九月初一"></span></td>
-        <td class="cal-holiday"><span data-day="11" data-cn-day="九月初一"></span></td>
-      </tr>
-      <tr>
-        <td><span data-day="12" data-cn-day="九月初一"></span></td>
-        <td><span data-day="13" data-cn-day="九月初一"></span></td>
-        <td><span data-day="14" data-cn-day="九月初一"></span></td>
-        <td><span data-day="15" data-cn-day="九月初一"></span></td>
-        <td><span data-day="16" data-cn-day="九月初一"></span></td>
-        <td class="cal-holiday"><span data-day="17" data-cn-day="九月初一"></span></td>
-        <td class="cal-holiday"><span data-day="18" data-cn-day="九月初一"></span></td>
-      </tr>
-      <tr>
-        <td><span data-day="19" data-cn-day="九月初一"></span></td>
-        <td><span data-day="20" data-cn-day="九月初一"></span></td>
-        <td><span data-day="21" data-cn-day="九月初一"></span></td>
-        <td><span data-day="22" data-cn-day="九月初一"></span></td>
-        <td><span data-day="23" data-cn-day="九月初一"></span></td>
-        <td class="cal-today cal-holiday"><span data-day="24" data-cn-day="九月初一"></span></td>
-        <td class="cal-holiday"><span data-day="25" data-cn-day="九月初一"></span></td>
-      </tr>
-      <tr>
-        <td><span data-day="26" data-cn-day="九月初一"></span></td>
-        <td><span data-day="27" data-cn-day="九月初一"></span></td>
-        <td><span data-day="28" data-cn-day="九月初一"></span></td>
-        <td><span data-day="29" data-cn-day="九月初一"></span></td>
-        <td><span data-day="30" data-cn-day="九月初一"></span></td>
-        <td class="cal-holiday"><span data-day="31" data-cn-day="九月初一"></span></td>
-        <td class="cal-next-month cal-holiday"><span data-day="01" data-cn-day="九月初一"></span></td>
-      </tr>
+      {{#each weekDates as |weekDate|}}
+        <tr>
+          {{#each weekDate as |d index|}}
+            <td class="{{cal-holiday index}} {{cal-next-month d.dateArray selectedDay}} {{cal-past-month d.dateArray selectedDay}} {{is-equals d.dateArray today 'cal-today'}} {{is-equals d.dateArray selectedDay 'cal-sel-date'}}" {{action 'selectDate' d}}><span data-year="{{d.gregorianYear}}" data-month="{{d.gregorianMonth}}" data-date="{{d.gregorianDate}}" data-cn-date="{{d.cnDate}}"></span></td>
+          {{/each}}
+        </tr>
+      {{/each}}
     </tbody>
   </table>
 </div>

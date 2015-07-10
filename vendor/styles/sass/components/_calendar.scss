@@ -1,5 +1,5 @@
-$cal-color-gray: #D2D2D4;
-$cal-color-light-gray: #F2F2F2;
+$cal-color-gray: #949494;
+$cal-color-light-gray: #D2D2D4;
 $cal-color-black: #4A4B47;
 $cal-color-orange: #EA6E60;
 $cal-color-white: #FFFFFF;
@@ -13,33 +13,37 @@ $cal-color-white: #FFFFFF;
 
   .cal-title {
      .cal-title-left {
-      padding-left: 20px;
-      .day {
+      .cal-title-date, .cal-title-month {
+        max-width: 100px;
+        text-align: center;
+      }
+      .cal-title-date {
         color: $cal-color-gray;
-        font-size: 64px;
-        line-height: 64px;
+        font-size: 48px;
+        line-height: 48px;
         margin-bottom: 10px;
       }
-      .month {
-        font-size: 24px;
-        line-height: 24px;
+      .cal-title-month {
+        font-size: 18px;
+        line-height: 18px;
       }
      }
      .cal-title-right {
-      .year {
+      .cal-title-cn-year {
         text-align: right;
-        height: 40px;
-        line-height: 40px;
-        margin: 0 10px 20px 0;
-        i {
-          font-size: 20px;
-          color: $cal-color-gray
-        }
-        span { font-size: 30px }
+        font-size: 14px;
+        margin-top: 4px;
       }
-      .monthes {
+      .cal-title-year {
+        text-align: right;
+        height: 24px;
+        line-height: 24px;
+        font-size: 24px;
+      }
+      .cal-title-monthes {
         color: $cal-color-gray;
         list-style: none;
+        font-size: 12px;
         li {
           display: inline-block;
           text-align: center;
@@ -52,7 +56,7 @@ $cal-color-white: #FFFFFF;
   }
   .cal-body {
     width: 100%;
-    margin-top: 40px;
+    margin-top: 30px;
     table {
       td {
         font-size: 12px;
@@ -70,21 +74,23 @@ $cal-color-white: #FFFFFF;
           padding-bottom: 12px
         }
         td span:before {
-          padding: 5px;
-          content: attr(data-day)
+          border-radius: 20px;
+          width: 20px;
+          height: 20px;
+          display: inline-block;
+          content: attr(data-date)
         }
         td span:after {
           display: block;
-          content: attr(data-cn-day)
+          content: attr(data-cn-date)
         }
         td span:before, td span:after {
           // display: inline-block
         }
-        td.cal-sel-day span, td.cal-today span, td span:hover {
+        td.cal-sel-date span, td.cal-today span, td span:hover {
           &:before {
             color: $cal-color-white;
             background: $cal-color-orange;
-            border-radius: 20px;
             @include box-sizing(content-box)
           }
         }
@@ -93,5 +99,32 @@ $cal-color-white: #FFFFFF;
         color: $cal-color-orange
       }
     }
+  }
+}
+
+@media (min-width: 768px) {
+  .cw-cal {
+    .cal-title {
+      .cal-title-left {
+        .cal-title-date {
+          font-size: 64px;
+          line-height: 64px;
+        }
+        .cal-title-month { font-size: 24px }
+      }
+      .cal-title-right {
+        .cal-title-year {
+          height: 48px;
+          font-size: 48px;
+          line-height: 48px
+        }
+        .cal-title-cn-year {
+          margin-top: 20px;
+          font-size: 24px
+        }
+      }
+    }
+
+    .cal-body { margin-top: 50px }
   }
 }

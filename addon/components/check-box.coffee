@@ -7,11 +7,6 @@ CheckBoxComponent = Ember.Component.extend
   value: false
   text: ""
 
-  # attributeBindings: ['tabindex']
-  # tabindex: (->
-  #   if @isEnabled then 0 else -1
-  # ).property 'isEnabled'
-
   toggleOnValue: true,
   toggleOffValue: false,
   __toggleValue: ->

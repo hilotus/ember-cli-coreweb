@@ -6,6 +6,7 @@
 `import AdapterParse from './adapter-parse'`
 `import Store from './store'`
 `import Model from './model'`
+`import Calendar from './calendar'`
 
 CW = Ember.Namespace.create
   VERSION: '1.0.0'
@@ -13,6 +14,7 @@ CW = Ember.Namespace.create
   AdapterParse: AdapterParse
   Store: Store
   Model: Model
+  Calendar: Calendar
 
 if Ember.libraries
   Ember.libraries.registerCoreLibrary 'CoreWeb', CW.VERSION

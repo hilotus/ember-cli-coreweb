@@ -10,7 +10,12 @@ SelectPickerComponent = Ember.Component.extend
 
   attributeBindings: ['style']
   style: Ember.computed 'width', ->
-    (if @width.includes('%') then "width:#{@width};" else "width:#{width}px;").htmlSafe()
+    width = if @width.includes('%') then @width else "#{@width}px"
+    return new Ember.Handlebars.SafeString "width: #{width}"
+
+  widthChanged: Ember.observer 'width', ->
+    @.$().css
+      width: (if @width.includes('%') then @width else "#{@width}px")
 
   # placeholder title
   prompt: ""

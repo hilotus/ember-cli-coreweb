@@ -6,10 +6,8 @@ DropButtonComponent = Ember.Component.extend
   # open the dropmenu
   isOpen: false
 
-  attributeBindings: ['tabindex', 'style']
+  attributeBindings: ['tabindex']
   tabindex: 0
-  style: Ember.computed ->
-    Ember.String.htmlSafe 'outline:none;'
 
   # default is actions
   label: 'Actions'
