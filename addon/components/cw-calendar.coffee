@@ -9,33 +9,22 @@ CWCalendarComponent = Ember.Component.extend
   monthOptions: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
   monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
-  content: Ember.computed
-    get: ->
-      debugger
-      today = new Date()
-      [today.getFullYear(), today.getMonth() + 1, today.getDate()]
-
-    set: (key, newValue) ->
-      newValue = new Date() unless newValue
-      if newValue instanceof Date
-        newValue = [newValue.getFullYear(), newValue.getMonth() + 1, newValue.getDate()]
-      newValue
-
-  monthName: Ember.computed 'month', ->
-    @monthNames[@month - 1]
+  content: []
 
   init: ->
     @_super()
+
+    content = @get('content')
+    throw new Ember.Error "CWCalendar's content must be an array of length 3." if !Ember.isArray(@content) || @content.length isnt 3
+
+    @set 'year', content[0]
+    @set 'month', content[1]
+    @set 'date', content[2]
 
     today = new Date()
     @set 'currentYear', today.getFullYear()
     @set 'currentMonth', today.getMonth() + 1
     @set 'currentDate', today.getDate()
-
-    content = @get('content')
-    @set 'year', content[0]
-    @set 'month', content[1]
-    @set 'date', content[2]
 
   weekDates: Ember.computed 'year', 'month', ->
     dates = @get("__cache.#{@year}-#{@month}")
