@@ -26,6 +26,9 @@ CWCalendarComponent = Ember.Component.extend
     @set 'currentMonth', today.getMonth() + 1
     @set 'currentDate', today.getDate()
 
+  monthName: Ember.computed 'month', ->
+    @monthNames[@month - 1]
+
   weekDates: Ember.computed 'year', 'month', ->
     dates = @get("__cache.#{@year}-#{@month}")
     return dates if dates

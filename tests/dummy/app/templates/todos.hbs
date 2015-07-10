@@ -7,7 +7,7 @@
     {{#each model as |todo|}}
       <li>
         {{input type="checkbox" checked=todo.isCompleted}}
-        {{todo.title}}
+        <span class="{{if todo.isCompleted 'completed'}}">{{todo.title}}</span>
         <i class="fa fa-times pointer" {{action 'del' todo}}></i>
       </li>
     {{/each}}
