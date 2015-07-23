@@ -2,8 +2,8 @@
   <div class="middle">
     <div class="inner alert-modal-inner">
       <div class="alert-modal {{alertType}}" tabindex="-1">
-        <h6 class="alert-title">{{title}}</h6>
-        <p>{{message}}</p>
+        <h6 class="alert-title">{{content.title}}</h6>
+        <p>{{content.message}}</p>
         <div class="alert-footer">
           {{#if rightButton}}
             {{link-button label=rightButton.label action=rightButton.action target=rightButton.target type='tiny' customClass="right"}}
