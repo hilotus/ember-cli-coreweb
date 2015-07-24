@@ -41,41 +41,6 @@ Adapter = Ember.Object.extend
     clazz = @getClassTypeKey clazz
     @ajax clazz + "/" + id, "DELETE"
 
-  # Batch Operations:
-  # https://www.parse.com/docs/rest#objects-batch
-  batch: (requests) ->
-    @ajax 'batch', 'POST', data: {requests: requests}
-
-  extractBatchData: (operations) ->
-    operations.creates = operations.creates or []
-    operations.updates = operations.updates or []
-    operations.destroys = operations.destroys or []
-    requests = []
-    records = []
-    self = @
-
-    for record in operations.creates
-      requests.push
-        method: 'POST'
-        path: self.buildBatchPath record.getCapitalizeTypeKey()
-        body: record.get 'modelData'
-      records.push record
-
-    for record in operations.updates
-      requests.push
-        method: 'PUT'
-        path: self.buildBatchPath record.getCapitalizeTypeKey(), record.get('id')
-        body: record.get 'changeData'
-      records.push record
-
-    for record in operations.updates
-      requests.push
-        method: 'DELETE'
-        path: self.buildBatchPath record.getCapitalizeTypeKey(), record.get('id')
-      records.push record
-
-    requests: requests, records: records
-
   getClassTypeKey: (clazz, method) ->
     if typeof clazz isnt "string"
       clazz.typeKey.classify()

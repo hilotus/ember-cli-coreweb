@@ -1,38 +1,9 @@
-<div class="container">
-  <div class="page-header row">
-    <div class="col-xs-6">
-      {{bread-crumbs breadcrumbs=breadcrumbs breadcrumbHome=breadcrumbHome}}
-    </div>
-    <div class="col-xs-6">
-      {{cw-button label="Alert" color="green" action="alertModal"}}
-      {{cw-button label="Confirm" color="blue" action="confirmModal"}}
-      {{cw-button label="Spinner" color="red" action="spinModal"}}
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-xs-12 col-md-4">
-      <div class="nav">
-        <div class="nav-header">
-          <h3>{{#link-to 'index'}}Dummy{{/link-to}}</h3>
-        </div>
-        <ul class="nav-stacked">
-          <li>{{#link-to 'checkbox'}}Checkbox{{/link-to}}</li>
-          <li>{{#link-to 'button'}}Button{{/link-to}}</li>
-          <li>{{#link-to 'dropbutton'}}Drop Button{{/link-to}}</li>
-          <li>{{#link-to 'picker'}}Picker{{/link-to}}</li>
-          <li>{{#link-to 'todos'}}CW{{/link-to}}</li>
-          <li>{{#link-to 'markdowneditor'}}MarkdownEditor{{/link-to}}</li>
-          <li>{{#link-to 'inputs'}}Inputs{{/link-to}}</li>
-          <li>{{#link-to 'calendar'}}Calendar{{/link-to}}</li>
-        </ul>
-      </div>
-    </div>
-    <div class="col-xs-12 col-md-8">
-      <div class="row" style="padding:0 10px 0 10px">{{outlet}}</div>
-    </div>
-  </div>
-</div>
+<h1>Welcome to EmberJS</h1>
 
-{{alert-modal content=alertContent}}
-
-{{spin-modal isActive=isActive title=title}}
+<ul class="todo-list">
+  {{#each model as |post|}}
+    <li>
+      {{post.title}}
+    </li>
+  {{/each}}
+</ul>

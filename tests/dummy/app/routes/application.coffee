@@ -1,6 +1,9 @@
 `import Ember from 'ember'`
 
-ApplicationRoute = Ember.Route.extend()
+AppRoute = Ember.Route.extend
+  model: ->
+    ctrl = @controllerFor 'application'
+    if Ember.isBlank ctrl.get('model')
+      @store.find 'post'
 
-
-`export default ApplicationRoute`
+`export default AppRoute`

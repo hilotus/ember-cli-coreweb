@@ -3,7 +3,7 @@ import Resolver from 'ember/resolver';
 import loadInitializers from 'ember/load-initializers';
 import config from './config/environment';
 
-import CW from 'ember-cli-coreweb/lib/main';
+import 'ember-cli-coreweb/lib/main';
 
 var App;
 

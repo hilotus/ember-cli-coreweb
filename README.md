@@ -5,13 +5,9 @@
     [http://reefpoints.dockyard.com/2015/03/22/tips-for-writing-ember-addons.html](http://reefpoints.dockyard.com/2015/03/22/tips-for-writing-ember-addons.html)
 
 * TODO:
-  1. I cached query Results on browser. If the query conditions is same as past one, it'll not call qeury api.
-    There are two way to call api to refresh the cache:
-    a. click refresh button.
-    b. retrieve data changed notification from server.
+  1. How to stop the same ajax get call. For example, you can see the dummy project, when `this.store.find("post")`, the post has a `creator` column is a foreign key to `user model`, it will send several request to get user by `creator`.
 
 * ISSUE:
-    1. select-picker is disappear in firefox!!!
 
 * Build && Publish:
     `npm add user`

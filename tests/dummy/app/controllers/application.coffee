@@ -1,37 +1,34 @@
 `import Ember from 'ember'`
-`import BreadCrumbsMixin from 'ember-cli-coreweb/mixins/bread-crumbs'`
-`import AlertModalMixin from 'ember-cli-coreweb/mixins/alert-modal'`
-`import SpinModalMixin from 'ember-cli-coreweb/mixins/spin-modal'`
 
-ApplicationController = Ember.Controller.extend BreadCrumbsMixin, AlertModalMixin, SpinModalMixin,
-  breadcrumbHome: Ember.computed ->
-    Ember.Object.create
-      route: 'application'
-      name: 'Home'
+ApplicationController = Ember.Controller.extend
+  addValue: ''
 
-  okButtonLabel: 'OK'
-  okButtonIcon: ''
-  cancelButtonLabel: 'Cancel'
-  cancelButtonIcon: ''
+  model: []
+
+  buttonDisabled: Ember.computed 'addValue', ->
+    !@addValue
 
   actions:
-    alertModal: ->
-      @am 'Alert Title', 'Alert Message Alert Message Alert Message Alert Message Alert Message Alert Message Alert MessageAlert Message', 'check'
+    add: ->
+      self = @
+      todo = new Todo
+      todo.setVals
+        title: @addValue
+        isCompleted: false
 
-    confirmModal: ->
-      button =
-        label: 'Confirm'
-        target: @
-        action: ->
-          alert("I'm in application controller.")
-          @closeModal()
+      todo.save().then((record) ->
+        self.model.pushObject record
+      ).catch((reason) ->
+        self.am 'Errors occur', reason.error, 'error'
+      ).finally ->
+        self.set 'addValue', ''
 
-      @cm 'Confirm Title', 'Confirm Message', 'warn', button
-
-    spinModal: ->
-      @spin 'Loading...'
-      Ember.run.later @, ->
-        @closeSpinner()
-      , 2000
+    del: (todo) ->
+      self = @
+      todo.delete().then(->
+        self.model.removeObject todo
+      ).catch((reason) ->
+        self.am 'Errors occur', reason.error, 'error'
+      )
 
 `export default ApplicationController`

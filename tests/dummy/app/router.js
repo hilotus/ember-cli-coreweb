@@ -6,14 +6,6 @@ var Router = Ember.Router.extend({
 });
 
 Router.map(function() {
-  this.route('checkbox');
-  this.route('button');
-  this.route('dropbutton');
-  this.route('picker');
-  this.route('todos');
-  this.route('markdowneditor');
-  this.route('inputs');
-  this.route('calendar');
 });
 
 export default Router;
