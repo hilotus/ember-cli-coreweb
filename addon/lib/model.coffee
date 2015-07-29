@@ -140,19 +140,18 @@ Model = Ember.Object.extend
     self = @
     if @get('isNew')
       @store.createRecord(@getTypeKey(), @modelData, self).then ->
-        Ember.RSVP.resolve self
+        Ember.RSVP.resolve()
     else
       @store.updateRecord(@getTypeKey(), @get('id'), @changeData).then ->
         self.clearChanges()
-        Ember.RSVP.resolve self
+        Ember.RSVP.resolve()
       , (err) ->
         self.discardChanges()
         Ember.RSVP.reject err
 
   delete: ->
-    self = @
     return @store.destroyRecord(@getTypeKey(), @get('id')).then ->
-      Ember.RSVP.resolve self
+      Ember.RSVP.resolve()
 
 # typeKey: 'User'
 # schema: {

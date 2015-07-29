@@ -121,14 +121,19 @@ Store = Ember.Object.extend
       for modelId, model of collection
         models.push model
 
-    async.eachSeries models, (model, callback) ->
-      model.commitChanges().then(->
-        callback null
-      ).catch((err) ->
-        callback err
-      )
-    , (err) ->
-      throw err if err
+    new Ember.RSVP.Promise (resolve, reject) ->
+      async.eachSeries models, (model, callback) ->
+        model.commitChanges().then(->
+          callback null
+        ).catch((err) ->
+          callback err
+        )
+      , (err) ->
+        if err then Ember.run null, reject, err else Ember.run null, resolve
+
+  # call
+  service: (url, type, options) ->
+    @adapterFor().ajax url, type, options
 
   # set model properties
   # schema: {

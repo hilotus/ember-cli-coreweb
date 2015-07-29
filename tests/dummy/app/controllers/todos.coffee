@@ -17,20 +17,16 @@ TodosController = Ember.Controller.extend
         title: @addValue
         isCompleted: false
 
-      todo.save().then((record) ->
-        self.model.pushObject record
-      ).catch((reason) ->
-        self.am 'Errors occur', reason.error, 'error'
-      ).finally ->
-        self.set 'addValue', ''
+      @store.commitChanges().then ->
+        self.model.pushObject todo
 
     del: (todo) ->
       self = @
-      todo.delete().then(->
+      @store.commitChanges().then ->
         self.model.removeObject todo
-      ).catch((reason) ->
-        self.am 'Errors occur', reason.error, 'error'
-      )
+
+      todo.delete().then ->
+        self.model.removeObject todo
 
     saveChanges: () ->
       @store.commitChanges()
