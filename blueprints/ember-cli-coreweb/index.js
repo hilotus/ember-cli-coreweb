@@ -1,5 +1,5 @@
 module.exports = {
-  description: ''
+  description: 'The blueprint for ember-cli-coreweb',
 
   normalizeEntityName: function() {},
 
