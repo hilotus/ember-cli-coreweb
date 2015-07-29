@@ -39,6 +39,9 @@ Model = Ember.Object.extend
     @clearChanges()
     @set 'status', 'persistent'
 
+  toJSON: ->
+    @modelData
+
   setVal: (keyName, value) ->
     throw new Ember.Error 'You can not set value for distroyed record.' if @get('isDistroyed')
 
@@ -120,44 +123,38 @@ Model = Ember.Object.extend
   commitChanges: ->
     unless @get('isPersistent')
       @discardChanges()
-      throw new Ember.Error 'You can not commit an unpersistent record.'
+      return Ember.RSVP.reject new Ember.Error 'You can not commit an unpersistent record.'
 
     @clearChanges()
     changes = @getChanges()
-    Ember.RSVP.reject {error: 'There are no changes.'} if $.isEmptyObject(changes)
+    # return Ember.RSVP.reject new Ember.Error 'There are no changes.' if Ember.$.isEmptyObject changes
+    return Ember.RSVP.resolve({}) if Ember.$.isEmptyObject changes
+
     @set 'changeData', changes
     @save()
 
-
+  # invoke save, you shoule invoke setVal() first.
   save: ->
-    throw new Ember.Error('You can not save distroyed record.') if @get('isDistroyed')
+    return Ember.RSVP.reject new Ember.Error 'You can not save distroyed record.' if @get('isDistroyed')
 
-    clazz = @constructor
     self = @
     if @get('isNew')
-      @store.createRecord(clazz, @modelData).then (json) ->
-        self.store.push clazz, json, self
+      @store.createRecord(@getTypeKey(), @modelData, self).then ->
         Ember.RSVP.resolve self
-      , (reason) ->
-        Ember.RSVP.reject reason
     else
-      @store.updateRecord(clazz, @get('id'), @changeData).then (json) ->
-        self.store.reload self.getTypeKey(), json, self
+      @store.updateRecord(@getTypeKey(), @get('id'), @changeData).then ->
+        self.clearChanges()
         Ember.RSVP.resolve self
-      , (reason) ->
+      , (err) ->
         self.discardChanges()
-        Ember.RSVP.reject reason
+        Ember.RSVP.reject err
 
   delete: ->
-    clazz = @constructor
     self = @
-    return @store.destroyRecord(clazz, @get('id')).then ->
-      self.set 'status', 'distroyed'
-      self.store.pull self.getTypeKey(), self.get('id')
+    return @store.destroyRecord(@getTypeKey(), @get('id')).then ->
       Ember.RSVP.resolve self
-    , (reason) ->
-      return Ember.RSVP.reject reason
 
+# typeKey: 'User'
 # schema: {
 #   'belongTo': {'creator': 'user', 'category': 'term'},
 #   'hasMany': {'tags': 'term', 'comments': 'comment'}

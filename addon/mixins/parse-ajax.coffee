@@ -44,10 +44,7 @@ ParseAjax = Ember.Mixin.create
     options
 
   ajaxError: (jqXHR) ->
-    reason = jqXHR.responseJSON
-    if Ember.isEmpty(reason) or $.isEmptyObject(reason)
-      reason = {error: "#{jqXHR.statusText}, (#{jqXHR.status})"}
-    reason
+    new Ember.Error "#{jqXHR.status}, (#{jqXHR.statusText})"
 
   buildUrl: (url) ->
     if url.match(/users|Password|login|batch/)

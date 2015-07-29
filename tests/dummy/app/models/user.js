@@ -6,7 +6,7 @@ var User = CW.Model.extend();
  * User Action
  */
 User.reopenClass({
-  typeKey: 'user'
+  typeKey: 'User'
 });
 
 export default User;

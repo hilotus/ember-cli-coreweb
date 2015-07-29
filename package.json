@@ -1,6 +1,6 @@
 {
   "name": "ember-cli-coreweb",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "The default blueprint for ember-cli addons.",
   "directories": {
     "doc": "doc",
@@ -18,7 +18,9 @@
   "author": "Guanzhong",
   "license": "MIT",
   "devDependencies": {
+    "async": "^1.4.0",
     "broccoli-asset-rev": "^2.0.2",
+    "ember-browserify": "^1.0.2",
     "ember-cli": "1.13.1",
     "ember-cli-app-version": "0.4.0",
     "ember-cli-dependency-checker": "1.0.0",

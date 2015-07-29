@@ -11,10 +11,10 @@ var Post = CW.Model.extend({
 });
 
 Post.reopenClass({
-  typeKey: 'post',
+  typeKey: 'Post',
   schema: {
-    'belongTo': {'creator': 'user', 'category': 'term'},
-    'hasMany': {'tags': 'term'}
+    'belongTo': {'creator': 'User', 'category': 'Term'},
+    'hasMany': {'tags': 'Term'}
   }
 });
 

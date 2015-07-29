@@ -1,0 +1,14 @@
+<div>
+  {{input value=addValue}}
+  <button disabled={{buttonDisabled}} {{action 'add'}}>Add</button>
+  <button {{action 'saveChanges'}}>Save Changes</button>
+</div>
+<ul class="todo-list">
+  {{#each model as |todo|}}
+    <li>
+      {{input type="checkbox" checked=todo.isCompleted}}
+      <span class="{{if todo.isCompleted 'completed'}}">{{todo.title}}</span>
+      {<a {{action 'del' todo}}>Delete</a>}
+    </li>
+  {{/each}}
+</ul>

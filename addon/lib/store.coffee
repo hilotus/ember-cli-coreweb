@@ -1,4 +1,5 @@
 `import Ember from 'ember'`
+`import async from 'npm:async'`
 
 __cache__ = {}
 
@@ -10,102 +11,82 @@ Store = Ember.Object.extend
       adapter = @container.lookup "adapter:#{@adapter}"
     adapter
 
-  find: (clazz, id={}) ->
-    return @findById clazz, id if typeof id is 'string'
+  find: (modelTypeKey, id={}) ->
+    return @findById modelTypeKey, id if typeof id is 'string'
 
-    clazz = @__getModelClazz clazz
-    typeKey = clazz.typeKey
     self = @
+    @adapterFor().find(modelTypeKey, id).then (json) ->
+      if Ember.isBlank json.results
+        return Ember.RSVP.reject new Ember.Error 'Find response must contains <results> column.'
 
-    @adapterFor().find(clazz, id).then (json) ->
       records = json.results.map (result) ->
-        self.push clazz, result
+        self.push modelTypeKey, result
       Ember.RSVP.resolve records
-    , (reason) ->
-      Ember.RSVP.reject reason
 
-  findById: (clazz, id) ->
-    clazz = @__getModelClazz clazz
-    typeKey = clazz.typeKey
+  findById: (modelTypeKey, id) ->
     self = @
-
-    if __cache__[typeKey] and (record = __cache__[typeKey][id])
+    if __cache__[modelTypeKey] and (record = __cache__[modelTypeKey][id])
       return Ember.RSVP.resolve record
 
-    @adapterFor().find(clazz, id).then (json) ->
-      Ember.RSVP.resolve self.push(clazz, json)
-    , (reason) ->
-      Ember.RSVP.reject reason
+    @adapterFor().find(modelTypeKey, id).then (json) ->
+      Ember.RSVP.resolve self.push(modelTypeKey, json)
 
-  findByIds: (clazz, ids) ->
-    throw new Ember.Error 'ids must be an array.' unless Ember.isArray ids
+  findByIds: (modelTypeKey, ids) ->
+    return Ember.RSVP.reject new Ember.Error 'ids must be an array.' unless Ember.isArray ids
 
-    clazz = @__getModelClazz clazz
-    typeKey = clazz.typeKey
     records = []
     self = @
 
-    if __cache__[typeKey]
+    if __cache__[modelTypeKey]
       ids.forEach (id, index) ->
-        if __cache__[typeKey][id]
-          records.pushObject __cache__[typeKey][id]
+        if __cache__[modelTypeKey][id]
+          records.pushObject __cache__[modelTypeKey][id]
 
       if ids.length is records.length
         return Ember.RSVP.resolve records
 
     records = []
-    @adapterFor().findByIds(clazz, ids).then (json) ->
+    @adapterFor().findByIds(modelTypeKey, ids).then (json) ->
       Ember.RSVP.resolve json.results.map (result) ->
-        self.push clazz, result
-    , (reason) ->
-      Ember.RSVP.reject reason
+        self.push modelTypeKey, result
 
-  createRecord: (clazz, data) ->
-    clazz = @__getModelClazz clazz
+  createRecord: (modelTypeKey, data, record) ->
     self = @
-    @adapterFor().createRecord(clazz, data).then (json) ->
-      data.id = json._id || json.objectId
-      Ember.merge data, json
-      Ember.RSVP.resolve data
-    , (reason) ->
-      Ember.RSVP.reject reason
+    @adapterFor().createRecord(modelTypeKey, data).then (json) ->
+      if json.errors
+        return Ember.RSVP.reject new Ember.Error errors[0].msg
+      else if json.changeSet
+        self.__applyChangesetHash json
+        Ember.RSVP.resolve()
+      else
+        data.id = json._id || json.objectId
+        Ember.merge data, json
+        self.push modelTypeKey, data, record
+        Ember.RSVP.resolve()
 
-  updateRecord: (clazz, id, data) ->
-    clazz = @__getModelClazz clazz
+  updateRecord: (modelTypeKey, id, data) ->
     self = @
-    @adapterFor().updateRecord(clazz, id, data).then (json) ->
-      Ember.RSVP.resolve json
-    , (reason) ->
-      Ember.RSVP.reject reason
+    @adapterFor().updateRecord(modelTypeKey, id, data).then (json) ->
+      if json.errors
+        return Ember.RSVP.reject new Ember.Error errors[0].msg
+      else if json.changeSet
+        self.__applyChangesetHash json
+        Ember.RSVP.resolve()
+      else
+        self.reload modelTypeKey, json, id
+        Ember.RSVP.resolve()
 
-  destroyRecord: (clazz, id) ->
-    clazz = @__getModelClazz clazz
-    @adapterFor().destroyRecord(clazz, id).then ->
-      Ember.RSVP.resolve()
-    , (reason) ->
-      Ember.RSVP.reject reason
-
-  # Batch Request
-  # Reference: https://www.parse.com/docs/rest#objects-batch
-  # operations: {creates: [], updates: [], destroys: []}
-  batch: (operations={}) ->
-    adapter = @adapterFor()
-    data = adapter.extractBatchData operations
+  destroyRecord: (modelTypeKey, id) ->
     self = @
-    adapter.batch(data.requests).then (json) ->
-      # json is an array.
-      json.forEach (r, i) ->
-        record = data.records[i]
-        unless $.isEmptyObject r.success  # create or update
-          if json.success.objectId or json.success._id
-            self.push record.constructor, json, record
-          else
-            self.reload record.getTypeKey(), json, record
-        else
-          self.pull record.getTypeKey(), record.get('id')
-      Ember.RSVP.resolve()
-    , (reason) ->
-      Ember.RSVP.reject reason
+    @adapterFor().destroyRecord(modelTypeKey, id).then (json) ->
+      if json.errors
+        return Ember.RSVP.reject new Ember.Error errors[0].msg
+      else if json.changeSet
+        self.__applyChangesetHash json
+        Ember.RSVP.resolve()
+      else
+        self.pull modelTypeKey, id
+        Ember.RSVP.resolve()
 
   # push record(s) into store
   # clazz: string / model class
@@ -119,22 +100,36 @@ Store = Ember.Object.extend
       self.__push clazz, json, record
 
   # Update a record in cache
-  # record: modle instance/model id
-  reload: (clazz, json, record) ->
-    record = __cache__[clazz.typeKey][record] if typeof record is 'string'
+  reload: (modelTypeKey, json, id) ->
+    record = __cache__[modelTypeKey][id]
+    throw new Ember.Error("There is no #{modelTypeKey} exists find by id #{id}.") unless record
 
     # use merged responseJson to update changeData
     Ember.merge json, record.get('changeData')
     record.merge json
 
-    clazz = @__getModelClazz clazz
-    __cache__[clazz.typeKey][record.get('id')] = record
+    __cache__[modelTypeKey][record.get('id')] = record
     @__normalize record, record.get('modelData')
 
   # Delete a record from cache
   pull: (typeKey, id) ->
-    if __cache__[typeKey][id]
-      delete __cache__[typeKey][id]
+    @__pull typeKey, id
+
+  # auto commit the changes model
+  commitChanges: ->
+    models = []
+    for modelTypeKey, collection of __cache__
+      for modelId, model of collection
+        models.push model
+
+    async.eachSeries models, (model, callback) ->
+      model.commitChanges().then(->
+        callback null
+      ).catch((err) ->
+        callback err
+      )
+    , (err) ->
+      throw err if err
 
   # set model properties
   # schema: {
@@ -184,11 +179,13 @@ Store = Ember.Object.extend
     else
       data
 
+  # clazz: class or model type key
   # Get Model Class by class name.
   __getModelClazz: (clazz) ->
     return clazz if typeof clazz isnt 'string'
     @container.lookup("model:#{clazz.toLowerCase()}").constructor
 
+  # clazz: class or model type key
   # Push a record into store cache
   __push: (clazz, json, record) ->
     clazz = @__getModelClazz clazz
@@ -207,7 +204,75 @@ Store = Ember.Object.extend
     __cache__[clazz.typeKey][json.id] = record
     # normalize record.
     @__normalize record, record.get('modelData')
+
+    record.set 'status', 'persistent'
     record
 
-`export {__cache__}`
+  __pull: (typeKey, id) ->
+    if (record = __cache__[typeKey][id])
+      record.set 'status', 'distroyed'
+      delete __cache__[typeKey][id]
+
+  # Load models from app env.
+  __getModels: ->
+    application = @container.lookup('application:main')
+    application.defaultModels or []
+
+  __loadRecords: (modelTypeKey, records, type) ->
+    batch_count = 1000
+    models = @__getModels()
+    self = @
+
+    if records.length > batch_count
+      recordsSpliced = records
+      records = records.splice(0, 1000)
+
+      Ember.run.later(() ->
+        self.__loadRecords modelTypeKey, recordsSpliced, type
+      , 10)
+
+    for record in records
+      if type is 1
+        self.push modelTypeKey, record
+      else if type is 2
+        self.reload modelTypeKey, record, (record.id or record._id or record.objectId)
+
+  # TODO: return the last insert's record
+  # type: 1, insert; 2, update
+  __loadData: (result, type) ->
+    models = @__getModels
+    self = @
+
+    for modelTypeKey in models
+      records = result[modelTypeKey]
+      # Load Records
+      if Ember.isArray(records)
+       self.__loadRecords modelTypeKey, records, type
+
+  # changeSet format: {inserts: {User: []}, updates: {Post: []}, deletes: {Comment:[]}}
+  # errors formats: [{code: 578, error: '...'}]
+  __applyChangesetHash: (changeSetJson) ->
+    inserts = changeSetJson.inserts
+    updates = changeSetJson.updates
+    deletes = changeSetJson.deletes
+    models = @__getModels
+    self = @
+
+    if Ember.isBlank(inserts) and Ember.isBlank(updates) and Ember.isBlank(deletes)
+      Ember.debug("Skipping applyChangesetHash logic. Received empty changeset response.")
+      return false
+
+    if deletes
+      for modelTypeKey in models
+        records = deletes[modelTypeKey] or [];
+        for record in records
+          recordId = record.id or record._id or record.objectId
+          self.pull modelTypeKey, recordId
+
+    if updates
+      @__loadData updates, 2
+
+    if inserts
+      @__loadData inserts, 1
+
 `export default Store`

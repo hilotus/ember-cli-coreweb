@@ -1,6 +1,6 @@
-.todo-list span.completed {
+.todo-list li span.completed {
   text-decoration: line-through
 }
-.pointer {
-  cursor: pointer;
+.todo-list li a {
+  cursor: pointer !important;
 }
