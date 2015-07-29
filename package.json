@@ -1,6 +1,6 @@
 {
   "name": "ember-cli-coreweb",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "The default blueprint for ember-cli addons.",
   "directories": {
     "doc": "doc",
@@ -37,9 +37,7 @@
     "ember-cli-coreweb"
   ],
   "dependencies": {
-    "ember-cli-coffeescript": "^0.11.0",
-    "ember-browserify": "^1.0.2",
-    "async": "^1.4.0"
+    "ember-cli-coffeescript": "^0.11.0"
   },
   "ember-addon": {
     "configPath": "tests/dummy/config"

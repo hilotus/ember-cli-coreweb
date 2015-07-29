@@ -1,5 +1,4 @@
 `import Ember from 'ember'`
-`import async from 'npm:async'`
 
 __cache__ = {}
 
