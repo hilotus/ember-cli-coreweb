@@ -117,7 +117,7 @@ Model = Ember.Object.extend
 
   # discard all changes
   discardChanges: ->
-    @store.__normalize @, @modelData
+    @store.normalize @, @modelData
 
   # commit all changes
   commitChanges: ->

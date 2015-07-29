@@ -53,9 +53,9 @@ Store = Ember.Object.extend
     self = @
     @adapterFor().createRecord(modelTypeKey, data).then (json) ->
       if json.errors
-        return Ember.RSVP.reject new Ember.Error errors[0].msg
+        Ember.RSVP.reject new Ember.Error errors[0].msg
       else if json.changeSet
-        self.__applyChangesetHash json
+        self.applyChangesetHash json.ChangeSet
         Ember.RSVP.resolve()
       else
         data.id = json._id || json.objectId
@@ -67,9 +67,9 @@ Store = Ember.Object.extend
     self = @
     @adapterFor().updateRecord(modelTypeKey, id, data).then (json) ->
       if json.errors
-        return Ember.RSVP.reject new Ember.Error errors[0].msg
+        Ember.RSVP.reject new Ember.Error errors[0].msg
       else if json.changeSet
-        self.__applyChangesetHash json
+        self.applyChangesetHash json.ChangeSet
         Ember.RSVP.resolve()
       else
         self.reload modelTypeKey, json, id
@@ -79,12 +79,39 @@ Store = Ember.Object.extend
     self = @
     @adapterFor().destroyRecord(modelTypeKey, id).then (json) ->
       if json.errors
-        return Ember.RSVP.reject new Ember.Error errors[0].msg
+        Ember.RSVP.reject new Ember.Error errors[0].msg
       else if json.changeSet
-        self.__applyChangesetHash json
+        self.applyChangesetHash json.ChangeSet
         Ember.RSVP.resolve()
       else
         self.pull modelTypeKey, id
+        Ember.RSVP.resolve()
+
+  # auto commit the changes model
+  commitChanges: ->
+    models = []
+    for modelTypeKey, collection of __cache__
+      for modelId, model of collection
+        models.push model
+
+    new Ember.RSVP.Promise (resolve, reject) ->
+      async.eachSeries models, (model, callback) ->
+        model.commitChanges().then(->
+          callback null
+        ).catch((err) ->
+          callback err
+        )
+      , (err) ->
+        if err then Ember.run null, reject, err else Ember.run null, resolve
+
+  # return ChangeSet response.
+  request: (url, type, options) ->
+    self = @
+    @adapterFor().ajax(url, type, options).then (json) ->
+      if json.errors
+        Ember.RSVP.reject new Ember.Error errors[0].msg
+      else
+        self.applyChangesetHash json.ChangeSet
         Ember.RSVP.resolve()
 
   # push record(s) into store
@@ -108,39 +135,18 @@ Store = Ember.Object.extend
     record.merge json
 
     __cache__[modelTypeKey][record.get('id')] = record
-    @__normalize record, record.get('modelData')
+    @normalize record, record.get('modelData')
 
   # Delete a record from cache
   pull: (typeKey, id) ->
     @__pull typeKey, id
-
-  # auto commit the changes model
-  commitChanges: ->
-    models = []
-    for modelTypeKey, collection of __cache__
-      for modelId, model of collection
-        models.push model
-
-    new Ember.RSVP.Promise (resolve, reject) ->
-      async.eachSeries models, (model, callback) ->
-        model.commitChanges().then(->
-          callback null
-        ).catch((err) ->
-          callback err
-        )
-      , (err) ->
-        if err then Ember.run null, reject, err else Ember.run null, resolve
-
-  # call
-  service: (url, type, options) ->
-    @adapterFor().ajax url, type, options
 
   # set model properties
   # schema: {
   #   'belongTo': {'creator': 'user', 'category': 'term'},
   #   'hasMany': {'tags': 'term'}
   # }
-  __normalize: (record, data) ->
+  normalize: (record, data) ->
     schema = record.constructor.schema
 
     for key, value of data
@@ -151,6 +157,34 @@ Store = Ember.Object.extend
       else
         record.set key, @__normalizeNormal value
     record
+
+  # changeSet format: {inserts: {User: []}, updates: {Post: []}, deletes: {Comment:[]}}
+  # errors formats: [{code: 578, error: '...'}]
+  applyChangesetHash: (changeSetJson) ->
+    inserts = changeSetJson.inserts
+    updates = changeSetJson.updates
+    deletes = changeSetJson.deletes
+    models = @__getModels
+    self = @
+
+    if Ember.isBlank(inserts) and Ember.isBlank(updates) and Ember.isBlank(deletes)
+      Ember.debug("Skipping applyChangesetHash logic. Received empty changeset response.")
+      return false
+
+    if deletes
+      for modelTypeKey in models
+        records = deletes[modelTypeKey] or [];
+        for record in records
+          recordId = record.id or record._id or record.objectId
+          self.pull modelTypeKey, recordId
+
+    if updates
+      @__loadData updates, 2
+
+    if inserts
+      @__loadData inserts, 1
+
+  ##############
 
   # record: model instance
   # typeKey: model type key
@@ -206,8 +240,9 @@ Store = Ember.Object.extend
 
     record.merge json
     __cache__[clazz.typeKey][json.id] = record
+
     # normalize record.
-    @__normalize record, record.get('modelData')
+    @normalize record, record.get('modelData')
 
     record.set 'status', 'persistent'
     record
@@ -252,31 +287,5 @@ Store = Ember.Object.extend
       # Load Records
       if Ember.isArray(records)
        self.__loadRecords modelTypeKey, records, type
-
-  # changeSet format: {inserts: {User: []}, updates: {Post: []}, deletes: {Comment:[]}}
-  # errors formats: [{code: 578, error: '...'}]
-  __applyChangesetHash: (changeSetJson) ->
-    inserts = changeSetJson.inserts
-    updates = changeSetJson.updates
-    deletes = changeSetJson.deletes
-    models = @__getModels
-    self = @
-
-    if Ember.isBlank(inserts) and Ember.isBlank(updates) and Ember.isBlank(deletes)
-      Ember.debug("Skipping applyChangesetHash logic. Received empty changeset response.")
-      return false
-
-    if deletes
-      for modelTypeKey in models
-        records = deletes[modelTypeKey] or [];
-        for record in records
-          recordId = record.id or record._id or record.objectId
-          self.pull modelTypeKey, recordId
-
-    if updates
-      @__loadData updates, 2
-
-    if inserts
-      @__loadData inserts, 1
 
 `export default Store`
