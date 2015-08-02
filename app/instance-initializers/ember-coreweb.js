@@ -3,6 +3,7 @@ import ENV from '../config/environment';
 
 export default {
   name: 'ember-coreweb',
+  after: 'coreweb',
 
   initialize: function(instance) {
     var CW = ENV.CW || ENV.default.CW || {};
