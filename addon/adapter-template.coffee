@@ -1,6 +1,4 @@
-`import Ember from 'ember'`
-
-Adapter = Ember.Object.extend
+adapter =
   # id: is a string or a query json
   find: (modelTypeKey, id) ->
     return @findById modelTypeKey, id if typeof id is "string"
@@ -32,9 +30,4 @@ Adapter = Ember.Object.extend
   getEndPoint: (modelTypeKey) ->
     modelTypeKey
 
-  # This methods must be override.
-  # Maybe you can use ic-ajax.
-  ajax: (url, type, options) ->
-    Ember.RSVP.reject error: 'You must override ajax method in applicationAdapter.'
-
-`export default Adapter`
+`export default adapter`

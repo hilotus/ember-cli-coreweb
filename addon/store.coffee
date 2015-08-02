@@ -3,18 +3,13 @@
 __cache__ = {}
 
 Store = Ember.Object.extend
-  adapter: '-cw'
-
-  adapterFor: ->
-    unless (adapter = @container.lookup 'adapter:application')
-      adapter = @container.lookup "adapter:#{@adapter}"
-    adapter
+  # this.adapter is dependent by CW config in environment.
 
   find: (modelTypeKey, id={}) ->
     return @findById modelTypeKey, id if typeof id is 'string'
 
     self = @
-    @adapterFor().find(modelTypeKey, id).then (json) ->
+    @adapter.find(modelTypeKey, id).then (json) ->
       if Ember.isBlank json.results
         return Ember.RSVP.reject new Ember.Error 'Find response must contains <results> column.'
 
@@ -27,7 +22,7 @@ Store = Ember.Object.extend
     if __cache__[modelTypeKey] and (record = __cache__[modelTypeKey][id])
       return Ember.RSVP.resolve record
 
-    @adapterFor().find(modelTypeKey, id).then (json) ->
+    @adapter.find(modelTypeKey, id).then (json) ->
       Ember.RSVP.resolve self.push(modelTypeKey, json)
 
   findByIds: (modelTypeKey, ids) ->
@@ -45,13 +40,13 @@ Store = Ember.Object.extend
         return Ember.RSVP.resolve records
 
     records = []
-    @adapterFor().findByIds(modelTypeKey, ids).then (json) ->
+    @adapter.findByIds(modelTypeKey, ids).then (json) ->
       Ember.RSVP.resolve json.results.map (result) ->
         self.push modelTypeKey, result
 
   createRecord: (modelTypeKey, data, record) ->
     self = @
-    @adapterFor().createRecord(modelTypeKey, data).then (json) ->
+    @adapter.createRecord(modelTypeKey, data).then (json) ->
       if json.errors
         Ember.RSVP.reject new Ember.Error errors[0].msg
       else if json.changeSet
@@ -65,7 +60,7 @@ Store = Ember.Object.extend
 
   updateRecord: (modelTypeKey, id, data) ->
     self = @
-    @adapterFor().updateRecord(modelTypeKey, id, data).then (json) ->
+    @adapter.updateRecord(modelTypeKey, id, data).then (json) ->
       if json.errors
         Ember.RSVP.reject new Ember.Error errors[0].msg
       else if json.changeSet
@@ -77,7 +72,7 @@ Store = Ember.Object.extend
 
   destroyRecord: (modelTypeKey, id) ->
     self = @
-    @adapterFor().destroyRecord(modelTypeKey, id).then (json) ->
+    @adapter.destroyRecord(modelTypeKey, id).then (json) ->
       if json.errors
         Ember.RSVP.reject new Ember.Error errors[0].msg
       else if json.changeSet
@@ -107,7 +102,7 @@ Store = Ember.Object.extend
   # return ChangeSet response.
   request: (url, type, options) ->
     self = @
-    @adapterFor().ajax(url, type, options).then (json) ->
+    @adapter.ajax(url, type, options).then (json) ->
       if json.errors
         Ember.RSVP.reject new Ember.Error errors[0].msg
       else
@@ -254,8 +249,7 @@ Store = Ember.Object.extend
 
   # Load models from app env.
   __getModels: ->
-    application = @container.lookup('application:main')
-    application.defaultModels or []
+    @defaultModels or []
 
   __loadRecords: (modelTypeKey, records, type) ->
     batch_count = 1000

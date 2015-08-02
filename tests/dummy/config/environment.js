@@ -30,7 +30,22 @@ module.exports = function(environment) {
       'media-src': "'self'"
     },
 
-    defaultModels: ['User', 'Post', 'Comment']
+    CW: {
+      defaultModels: ['User', 'Post', 'Comment'],
+
+      parseApi: {
+        applicationId: '4f3ATEailRoi1A49sh4vlNppWKk8G8xf6ThymKkG',
+        restApiKey: 'm2CUMzzcTkqZLTR2v7BVbXLIg9vAzqAxWYVUvyjm',
+        host: 'https://api.parse.com',
+        namespace: '1',
+        classesPath: 'classes',
+      },
+
+      api: {
+        host: 'http://localhost:9292',
+        namespace: '1'
+      }
+    }
   };
 
   if (environment === 'development') {

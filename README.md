@@ -12,10 +12,6 @@ I removed `ember-disable-prototype-extensions` from default package.json, and we
 
 For example, you can see the dummy project, when `this.store.find("post")`, the post has a `creator` column is a foreign key to `user model`, it will send several request to get user by `creator`.
 
-> ChangeSet Response
-
-set `defaultModels` in `environment.js`:
-
 ```js
 // environment.js
 ENV.defaultModels = ['User', 'Post', 'Comment']
