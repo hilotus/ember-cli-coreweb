@@ -99,16 +99,6 @@ Store = Ember.Object.extend
       , (err) ->
         if err then Ember.run null, reject, err else Ember.run null, resolve
 
-  # return ChangeSet response.
-  request: (url, type, options) ->
-    self = @
-    @adapter.ajax(url, type, options).then (json) ->
-      if json.errors
-        Ember.RSVP.reject new Ember.Error errors[0].msg
-      else
-        self.applyChangesetHash json.ChangeSet
-        Ember.RSVP.resolve()
-
   # push record(s) into store
   # clazz: string / model class
   push: (clazz, json, record) ->

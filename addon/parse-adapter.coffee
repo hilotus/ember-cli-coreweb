@@ -37,8 +37,8 @@ parseAdapter =
   getEndPoint: (modelTypeKey) ->
     if modelTypeKey.match(/User/) then "users" else modelTypeKey
 
-parseAjax = Ember.$.extend ajax, parseAjax,
-parseAdapter = Ember.$.extend adapter, parseAdapter,
+parseAjax = Ember.$.extend Ember.copy(ajax), parseAjax
+parseAdapter = Ember.$.extend Ember.copy(adapter), parseAdapter
 
 parseAdapter = Ember.$.extend parseAdapter, parseAjax
 ParseAdapter = Ember.Object.extend parseAdapter
