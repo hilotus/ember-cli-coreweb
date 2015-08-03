@@ -5,7 +5,7 @@ module.exports = function(environment) {
     modulePrefix: 'dummy',
     environment: environment,
     baseURL: '/',
-    locationType: 'hash',
+    locationType: 'auto',
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
@@ -41,7 +41,7 @@ module.exports = function(environment) {
         classesPath: 'classes',
       },
 
-      api: {
+      defaultApi: {
         host: 'http://localhost:9292',
         namespace: '1'
       }

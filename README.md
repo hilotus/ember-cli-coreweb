@@ -1,22 +1,37 @@
 # Ember-cli-coreweb
 
-I removed `ember-disable-prototype-extensions` from default package.json, and we can reference the two links [https://github.com/ember-cli/ember-cli/issues/3443](https://github.com/ember-cli/ember-cli/issues/3443), [http://reefpoints.dockyard.com/2015/03/22/tips-for-writing-ember-addons.html](http://reefpoints.dockyard.com/2015/03/22/tips-for-writing-ember-addons.html)
+I removed `ember-disable-prototype-extensions` from default package.json.
 
 ## Usage
 
 `npm install --save-dev ember-cli-corweb`
+
+```js
+// environment.js
+ENV = {
+  ...
+  CW: {
+    defaultModels: ['User', 'Post', 'Comment'],
+
+    parseApi: {
+      applicationId: 'xxx',
+      restApiKey: 'xxx',
+      host: 'https://api.parse.com',
+      namespace: '1',
+      classesPath: 'classes',
+    },
+
+    defaultApi: {
+      host: 'http://localhost:9292',
+      namespace: '1'
+    }
+  }
+  ...
+}
+```
 
 ## TODO List
 
 > How to stop the same ajax get call
 
 For example, you can see the dummy project, when `this.store.find("post")`, the post has a `creator` column is a foreign key to `user model`, it will send several request to get user by `creator`.
-
-```js
-// environment.js
-ENV.defaultModels = ['User', 'Post', 'Comment']
-```
-
-> Use `ember-cli-linker` to import third party packages.
-
-Reference: [https://github.com/ef4/ember-browserify/issues/34](https://github.com/ef4/ember-browserify/issues/34), [https://github.com/ef4/ember-browserify](https://github.com/ef4/ember-browserify)
