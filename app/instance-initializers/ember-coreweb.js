@@ -29,7 +29,12 @@ export default {
     adapter.set('api', api);
     store.set('defaultModels', CW.defaultModels);
 
-    instance.container.lookup('service:ajax').setProperties({'api': api, 'store': store});
+    if (parseApi) {
+      instance.container.lookup('service:parse-ajax').setProperties({'api': api, 'store': store});
+    } else {
+      instance.container.lookup('service:ajax').setProperties({'api': api, 'store': store});
+    }
+
     instance.container.lookup('store:-cw').set('adapter', adapter);
   }
 }
