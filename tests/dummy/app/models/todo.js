@@ -2,7 +2,7 @@ var Todo = CW.Model.extend({
 });
 
 Todo.reopenClass({
-  typeKey: 'Todo',
+  typeKey: 'todo',
 });
 
 export default Todo;

@@ -2,9 +2,9 @@ var Term = CW.Model.extend({
 });
 
 Term.reopenClass({
-  typeKey: 'Term',
+  typeKey: 'term',
   schema: {
-    'belongTo': {'creator': 'User'},
+    'belongTo': {'creator': 'user'},
     'hasMany': {}
   }
 });

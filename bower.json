@@ -11,7 +11,8 @@
     "jquery": "^1.11.1",
     "loader.js": "ember-cli/loader.js#3.2.0",
     "qunit": "~1.17.1",
-    "async": "~1.4.0"
+    "async": "~1.4.0",
+    "pluralize": "~1.1.4"
   },
   "devDependencies": {}
 }
