@@ -22,7 +22,9 @@ export default AjaxService.extend({
       * 2. Updating Users
       * 3. Deleting Users
        */
-      if ((options.url.match(/users\/me/) && options.type === 'GET') || (options.type.match(/PUT|DELETE/) && options.url.match(/users/))) {
+      if ((options.url.match(/users\/me/) && options.type === 'GET')
+          || (options.type.match(/PUT|DELETE/) && options.url.match(/users/))
+          || (options.type === 'POST' && options.url.match(/logout/))) {
         return xhr.setRequestHeader('X-Parse-Session-Token', self.get('sessionToken'));
       }
     };
@@ -33,8 +35,8 @@ export default AjaxService.extend({
   buildUrl: function(modelTypeKey, id) {
     var path;
 
-    if (modelTypeKey.match(/user|users|requestPasswordReset|login|batch/)) {
-      path = modelTypeKey === 'user' ? 'users' : modelTypeKey.classify();
+    if (modelTypeKey.match(/user|users|requestPasswordReset|login|logout/)) {
+      path = modelTypeKey === 'user' ? 'users' : modelTypeKey;
       if (!!id) {
         path = path + '/' + id;
       }
