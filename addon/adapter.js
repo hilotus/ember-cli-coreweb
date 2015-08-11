@@ -8,23 +8,47 @@ export default Ember.Object.extend({
     if (typeof id === "string") {
       return this.findById(modelTypeKey, id);
     }
-
-    return this.ajaxService.ajax(this.ajaxService.buildUrl(modelTypeKey), "GET", { data: id});
+    var settings = {
+      url: this.ajaxService.buildUrl(modelTypeKey),
+      type: 'get',
+      data: id
+    };
+    return this.ajaxService.sendRequest(settings);
   },
 
   findById: function(modelTypeKey, id) {
-    return this.ajaxService.ajax(this.ajaxService.buildUrl(modelTypeKey, id), "GET");
+    var settings = {
+      url: this.ajaxService.buildUrl(modelTypeKey, id),
+      type: 'get'
+    };
+    return this.ajaxService.sendRequest(settings);
   },
 
   createRecord: function(modelTypeKey, data) {
-    return this.ajaxService.ajax(this.ajaxService.buildUrl(modelTypeKey), "POST", { data: data });
+    var settings = {
+      url: this.ajaxService.buildUrl(modelTypeKey),
+      type: 'post',
+      data: data,
+      contentType: 'application/json; charset=utf-8'
+    };
+    return this.ajaxService.sendRequest(settings);
   },
 
   updateRecord: function(modelTypeKey, id, data) {
-    return this.ajaxService.ajax(this.ajaxService.buildUrl(modelTypeKey, id), "PUT", { data: data });
+    var settings = {
+      url: this.ajaxService.buildUrl(modelTypeKey, id),
+      type: 'put',
+      data: data,
+      contentType: 'application/json; charset=utf-8'
+    };
+    return this.ajaxService.sendRequest(settings);
   },
 
   destroyRecord: function(modelTypeKey, id) {
-    return this.ajaxService.ajax(this.ajaxService.buildUrl(modelTypeKey, id), "DELETE");
+    var settings = {
+      url: this.ajaxService.buildUrl(modelTypeKey, id),
+      type: 'delete'
+    };
+    return this.ajaxService.sendRequest(settings);
   }
 });

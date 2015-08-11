@@ -3,40 +3,75 @@ import Ember from 'ember';
 var Parent = Ember.Service || Ember.Object;
 
 export default Parent.extend({
+  __fixtures__: {},
   api: {},
 
-  ajax: function(url, type, options) {
+  sendRequest: function() {
+    var settings = this.parseArgs.apply(this, arguments);
+    return this.makePromise(settings);
+  },
+
+  defineFixture: function(url, fixture) {
+    if (fixture.response) {
+      fixture.response = JSON.parse(JSON.stringify(fixture.response));
+    }
+    this.__fixtures__[url] = fixture;
+  },
+
+  lookupFixture: function(url) {
+    return this.__fixtures__ && this.__fixtures__[url];
+  },
+
+  makePromise: function(settings) {
     var self = this;
     return new Ember.RSVP.Promise(function(resolve, reject) {
-      var hash;
-      hash = self.ajaxOptions(url, type, options);
-      hash.success = function(json) {
+      var fixture = self.lookupFixture(settings.url);
+      if (fixture) {
+        if (fixture.textStatus === 'success' || fixture.textStatus == null) {
+          return Ember.run.later(null, resolve, fixture);
+        } else {
+          return Ember.run.later(null, reject, fixture);
+        }
+      }
+      // response, textStatus, jqXHR
+      settings.success = function(json) {
         return Ember.run(null, resolve, json);
       };
-      hash.error = function(jqXHR) {
-        return Ember.run(null, reject, self.ajaxError(jqXHR));
+      // jqXHR, textStatus, errorThrown
+      settings.error = function(jqXHR) {
+        return Ember.run(null, reject, self.makeError(jqXHR));
       };
-      return Ember.$.ajax(hash);
+      Ember.$.ajax(settings);
     });
   },
 
-  ajaxOptions: function(url, type, options) {
-    if (options == null) {
-      options = {};
+  parseArgs: function() {
+    var settings = {};
+    if (arguments.length === 1) {
+      if (typeof arguments[0] === "string") {
+        settings.url = arguments[0];
+      } else {
+        settings = arguments[0];
+      }
+    } else if (arguments.length === 2) {
+      settings = arguments[1];
+      settings.url = arguments[0];
     }
-
-    options.url = url;
-    options.type = type.toUpperCase();
-    options.dataType = 'json';
-    options.xhrFields = { 'withCredentials': true };
-    if (options.data || options.type !== 'GET') {
-      options.contentType = 'application/json; charset=utf-8';
-      options.data = JSON.stringify(options.data);
+    if (settings.success || settings.error) {
+      throw new Ember.Error("ajax should use promises, received 'success' or 'error' callback");
     }
-    return options;
+    settings.type = (settings.type || 'GET').toUpperCase();
+    if (settings.type.match(/PUT|POST/)) {
+      if (settings.data) {
+        settings.data = JSON.stringify(settings.data);
+      }
+    }
+    return settings;
   },
 
-  ajaxError: function(jqXHR) {
+  makeSuccess: function() {},
+
+  makeError: function(jqXHR) {
     var result = jqXHR.responseJSON;
     if (!result) {
       return new Ember.Error(jqXHR.status + jqXHR.statusText);
