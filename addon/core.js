@@ -3,12 +3,14 @@ import Ember from 'ember';
 import Adapter from './adapter';
 import Store from './store';
 import Model from './model';
+import CWError from './error';
 
 var CW = Ember.Namespace.create({
   VERSION: '1.0.0',
   Adapter: Adapter,
   Store: Store,
-  Model: Model
+  Model: Model,
+  Error: CWError
 });
 
 if (Ember.libraries) {

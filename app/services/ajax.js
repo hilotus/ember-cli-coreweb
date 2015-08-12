@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import CWError from 'ember-cli-coreweb/error';
 
 var Parent = Ember.Service || Ember.Object;
 
@@ -34,8 +35,8 @@ export default Parent.extend({
         }
       }
       // response, textStatus, jqXHR
-      settings.success = function(json) {
-        return Ember.run(null, resolve, json);
+      settings.success = function(response) {
+        return Ember.run(null, resolve, self.makeSuccess(response));
       };
       // jqXHR, textStatus, errorThrown
       settings.error = function(jqXHR) {
@@ -69,14 +70,16 @@ export default Parent.extend({
     return settings;
   },
 
-  makeSuccess: function() {},
+  makeSuccess: function(response) {
+    return response;
+  },
 
   makeError: function(jqXHR) {
     var result = jqXHR.responseJSON;
     if (!result) {
-      return new Ember.Error(jqXHR.status + jqXHR.statusText);
+      return new CWError(jqXHR.status + jqXHR.statusText, jqXHR.status);
     }
-    return new Ember.Error(result.message || result.error);
+    return new CWError(result.message || result.error, jqXHR.status);
   },
 
   // Build url by modelTypeKey and id
