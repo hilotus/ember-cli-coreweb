@@ -70,21 +70,11 @@ export default Ember.Object.extend({
       }
     }
 
-    return new Ember.RSVP.Promise(function(resolve, reject) {
-      return async.eachSeries(models, function(model, callback) {
-        return model.commitChanges().then(function() {
-          return callback(null);
-        }).catch(function(err) {
-          return callback(err);
-        });
-      }, function(err) {
-        if (err) {
-          return Ember.run(null, reject, err);
-        } else {
-          return Ember.run(null, resolve);
-        }
-      });
+    var promises = models.map(function (item) {
+      return item.commitChanges();
     });
+
+    return Ember.RSVP.Promise.all(promises);
   },
 
   push: function(clazz, json, record) {

@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import CWError from 'ember-cli-coreweb/error';
+import pluralize from 'ember-cli-coreweb/pluralize';
 
 var Parent = Ember.Service || Ember.Object;
 
