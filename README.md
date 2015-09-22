@@ -11,14 +11,14 @@ I removed `ember-disable-prototype-extensions` from default package.json.
 ENV = {
   ...
   CW: {
-    parseApi: {
-      applicationId: 'xxx',
-      restApiKey: 'xxx'
-    },
-
-    defaultApi: {
+    api: {
+      // required
       host: 'http://localhost:9292',
-      namespace: '1'
+      namespace: '1',
+      // optional, (third-part. such as 'parse')
+      applicationId: 'xxx',
+      restApiKey: 'xxx',
+      classPath: 'classes'
     }
   }
   ...

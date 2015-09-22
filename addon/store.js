@@ -3,6 +3,8 @@ import Ember from 'ember';
 var __cache__ = {};
 
 export default Ember.Object.extend({
+  api: null,
+
   find: function(modelTypeKey, id) {
     var self;
     if (id == null) {
@@ -12,7 +14,7 @@ export default Ember.Object.extend({
       return this.findById(modelTypeKey, id);
     }
     self = this;
-    return this.adapter.find(modelTypeKey, id).then(function(json) {
+    return this.api.query(modelTypeKey, id).then(function(json) {
       return Ember.RSVP.resolve(json.results.map(function(result) {
         return self.push(modelTypeKey, result);
       }));
@@ -25,7 +27,7 @@ export default Ember.Object.extend({
     if (__cache__[modelTypeKey] && (record = __cache__[modelTypeKey][id])) {
       return Ember.RSVP.resolve(record);
     }
-    return this.adapter.find(modelTypeKey, id).then(function(json) {
+    return this.api.query(modelTypeKey, id).then(function(json) {
       return Ember.RSVP.resolve(self.push(modelTypeKey, json));
     });
   },
@@ -33,7 +35,7 @@ export default Ember.Object.extend({
   createRecord: function(modelTypeKey, data, record) {
     var self;
     self = this;
-    return this.adapter.createRecord(modelTypeKey, data).then(function(json) {
+    return this.api.post(modelTypeKey, data).then(function(json) {
       data.id = json._id || json.objectId;
       Ember.merge(data, json);
       self.push(modelTypeKey, data, record);
@@ -44,7 +46,7 @@ export default Ember.Object.extend({
   updateRecord: function(modelTypeKey, id, data) {
     var self;
     self = this;
-    return this.adapter.updateRecord(modelTypeKey, id, data).then(function(json) {
+    return this.api.put(modelTypeKey, id, data).then(function(json) {
       self.reload(modelTypeKey, json, id);
       return Ember.RSVP.resolve();
     });
@@ -53,7 +55,7 @@ export default Ember.Object.extend({
   destroyRecord: function(modelTypeKey, id) {
     var self;
     self = this;
-    return this.adapter.destroyRecord(modelTypeKey, id).then(function() {
+    return this.api.delete(modelTypeKey, id).then(function() {
       self.pull(modelTypeKey, id);
       return Ember.RSVP.resolve();
     });
