@@ -57,14 +57,16 @@ export default Parent.extend({
       if (res.jqXHR) {
         json = res.jqXHR.responseJSON;
         if (!Ember.$.isPlainObject(json)) {
-          err = new Error(res.jqXHR.status + ': ' + res.jqXHR.statusText);
+          err = new Ember.Error(res.jqXHR.status + ': ' + res.jqXHR.statusText);
         } else {
-          err = new Error(JSON.stringify(json));
+          // parse error result.
+          // {"code":101,"error":"invalid login parameters"}
+          err = new Ember.Error(json.error);
         }
       } else if (res instanceof Error) {  // res is a Error;
         err = res;
       } else {
-        err = new Error('Unkonw Error!');
+        err = new Ember.Error('Unkonw Error!');
       }
 
       return Ember.RSVP.reject(err);
@@ -112,14 +114,21 @@ export default Parent.extend({
     post / put: data --> request body
   */
   buildArgs: function (data) {
-    var ops = this.options,
-      self = this,
-      settings = {};
+    var settings = {};
 
-    if (ops.applicationId) {  // Parse api
+    if (this.options.applicationId) {  // Parse api
       settings.beforeSend = function (xhr) {
-        xhr.setRequestHeader('X-Parse-Application-Id', self.get('options.applicationId'));
-        xhr.setRequestHeader('X-Parse-REST-API-Key', self.get('options.restApiKey'));
+        xhr.setRequestHeader('X-Parse-Application-Id', this.get('options.applicationId'));
+        xhr.setRequestHeader('X-Parse-REST-API-Key', this.get('options.restApiKey'));
+
+        /**
+          Logging In should add "X-Parse-Revocable-Session: 1" header,
+          even if your app has "Require Revocable Sessions" turned off,
+          else this header is optional.
+        **/
+        if (settings.url.match(/login/)) {
+          xhr.setRequestHeader('X-Parse-Revocable-Session', 1);
+        }
 
         /*
         * 1. Validating Session Tokens / Retrieving Current User / logout
@@ -129,9 +138,9 @@ export default Parent.extend({
         if (settings.url.match(/users\/me/)
             || (settings.url.match(/users/) && settings.type.match(/PUT|DELETE/))
             || (settings.url.match(/logout/) && settings.type.match(/POST/))) {
-          xhr.setRequestHeader('X-Parse-Session-Token', self.get('sessionToken'));
+          xhr.setRequestHeader('X-Parse-Session-Token', this.get('sessionToken'));
         }
-      };
+      }.bind(this);
     } else {  // common server-backed api
     }
 

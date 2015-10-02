@@ -138,15 +138,20 @@ export default Ember.Object.extend({
     });
   },
 
+  /**
+    values: id array.
+  **/
   __normalizeHasMany: function(record, typeKey, key, values) {
-    var self;
-    self = this;
+    var promises = values.map(function (id) {
+      return this.find(typeKey, id);
+    }.bind(this));
+
     record.set(key, []);
-    return values.forEach(function(value) {
-      return self.find(typeKey, value).then(function(r) {
-        return record.get(key).pushObject(r);
+
+    Ember.RSVP.all(promises)
+      .then(function (records) {
+        record.get(key).pushObjects(records);
       });
-    });
   },
 
   __normalizeNormal: function(data) {
