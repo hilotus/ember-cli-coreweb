@@ -10,29 +10,25 @@ export default Ember.Controller.extend({
   }),
 
   actions: {
-    add: function() {
-      var self, todo;
-      self = this;
-      todo = new Todo();
-      todo.setVals({
+    add: function () {
+      var todo = new Todo();
+      todo.setProperties({
         title: this.addValue,
         isCompleted: false
       });
-      return todo.save().then(function() {
-        self.model.pushObject(todo);
-        return self.set('addValue', '');
-      });
+      return todo.save().then(function (record) {
+        this.model.pushObject(record);
+        return this.set('addValue', '');
+      }.bind(this));
     },
 
-    del: function(todo) {
-      var self;
-      self = this;
-      return todo["delete"]().then(function() {
-        return self.model.removeObject(todo);
-      });
+    del: function (todo) {
+      return todo.delete().then(function (record) {
+        return this.model.removeObject(record);
+      }.bind(this));
     },
 
-    saveChanges: function() {
+    saveChanges: function () {
       return this.store.commitChanges();
     }
   }

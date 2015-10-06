@@ -1,28 +1,22 @@
 import Ember from 'ember';
 
-/*
+/**
   how to use model
-  var m = Model.create();
-  m.setVal('name', 'wluo');  ==> this will save name in modelData;
-  m.save();  ==> then, the name will save in model as a property.
-  var m = store.find('modelType', id);
-  m.setVal('name', 'wluo11'); ==> this will save name in changeData and modelData.name is wluo11,
-                                  but m.get('name') is wluo.
-  m.save();  ==> then changeData is empty, and m.get('name') is wluo11
-  It's important!!!
+  var user = User.create();
+  user.set('name', 'wluo');  ==> this will save name in modelData;
+  user.save();  ==> then, the name will save in model as a property.
   All of above, only after saving success, we will update model instance properties.
-*/
+**/
 
 var Model = Ember.Object.extend({
   init: function() {
     this._super.apply(this, arguments);
+
+    // the basic data query from api.
     this.set('modelData', {});
-    this.set('changeData', {});
   },
 
-  // make sure store is cw.store
-  store: null,
-
+  store: null,  // make sure store is cw.store
   status: 'new',
 
   isNew: Ember.computed('status', function() {
@@ -37,179 +31,165 @@ var Model = Ember.Object.extend({
     return this.status === 'distroyed';
   }),
 
-  /*
+  /**
     merge diffrences between server and modelData after create or update.
     call after find and save
     you can see in store.js
-  */
-  merge: function(json) {
+  **/
+  merge: function (json) {
     Ember.merge(this.modelData, json);
-    this.clearChanges();
     this.set('status', 'persistent');
   },
 
-  toJSON: function() {
-    return this.modelData;
+  pull: function () {
+    this.set('status', 'distroyed');
   },
 
-  setVal: function(keyName, value) {
-    var vs;
-    if (this.get('isDistroyed')) {
-      throw new Ember.Error('You can not set value for distroyed record.');
-    }
-
-    if (value instanceof Ember.Object) {
-      vs = value.get('id');
-    } else if (Ember.isArray(value)) {
-      vs = value.map(function(v) {
-        if (v instanceof Ember.Object) {
-          return v.get('id');
-        } else {
-          return v;
-        }
-      });
-    } else {
-      vs = value;
-    }
-
-    if (this.get('isPersistent')) {
-      this.set("changeData." + keyName, vs);
-    } else {
-      this.set("modelData." + keyName, vs);
-    }
-
-    return this;
-  },
-
-  setVals: function(values) {
-    var key, self, value;
-    if (this.get('isDistroyed')) {
-      throw new Ember.Error('You can not set value for distroyed record.');
-    }
-
-    self = this;
-    for (key in values) {
-      value = values[key];
-      self.setVal(key, value);
-    }
-    return self;
-  },
-
-  getVal: function(keyName) {
-    return this.get("modelData." + keyName);
-  },
-
-  getTypeKey: function() {
+  getTypeKey: function () {
     return this.constructor.typeKey;
   },
 
-  getChanges: function() {
-    var belongTo = [], hasMany = [];
+  getSchema: function () {
+    return this.constructor.schema;
+  },
 
-    var schema = this.constructor.schema,
-      modelData = this.modelData,
-      self = this,
-      changes = {},
-      key;
+  getChanges: function () {
+    var changes = {},
+      schema = this.getSchema();
 
-    for (key in schema.belongTo) {
-      belongTo.push(key);
-    }
-    for (key in schema.hasMany) {
-      hasMany.push(key);
-    }
-
-    var changed, tmpValue, tmpDataArr;
-    for (key in modelData) {
-      if (belongTo.contains(key)) {
-        changed = self.get(key + ".id") !== self.get("modelData." + key);
-        tmpValue = self.get(key + ".id");
-      } else if (hasMany.contains(key)) {
-        tmpValue = self.get(key).map(function(value) {
-          return value.get('id');
-        });
-        tmpDataArr = self.get("modelData." + key);
-        changed = !(Ember.$(tmpValue).not(tmpDataArr).length === 0 && Ember.$(tmpDataArr).not(tmpValue).length === 0);
-      } else {
-        changed = self.get(key) !== self.get("modelData." + key);
-        tmpValue = self.get(key);
+    for (var key in schema) {
+      // common api, parse api, timestamps(createdAt, updatedAt)
+      if (key === 'id' || key === 'objectId' || schema[key].type === 'timestamps') {
+        continue;
       }
 
-      if (changed) {
-        changes[key] = tmpValue;
+      if (schema[key].type.match(/string|boolean|number/)) {
+        if (this.get('isNew')) {
+          changes[key] = this.get(key);
+        } else if (this.get('isPersistent')) {
+          if (this.get(key) !== this.get('modelData.' + key)) {
+            changes[key] = this.get(key);
+          }
+        }
+      } else if (schema[key].type === 'belongTo') {
+        if (this.get('isNew')) {
+          changes[key] = this.get(key + '.id');
+        } else if (this.get('isPersistent')) {
+          if (this.get(key + '.id') !== this.get('modelData.' + key)) {
+            changes[key] = this.get(key + '.id');
+          }
+        }
+      } else if (schema[key].type === 'hasMany') {
+        if (this.get('isNew')) {
+          changes[key] = this.get(key).map(function (item) { return item.get('id'); });
+        } else if (this.get('isPersistent')) {
+          var value1 = this.get(key).map(function (item) { return item.get('id'); });
+          var value2 = this.get('modelData.' + key);
+          if (Ember.$(value1).not(value2).length !== 0 || Ember.$(value2).not(value1).length !== 0) {
+            changes[key] = value1;
+          }
+        }
       }
-      changed = false;
     }
-
     return changes;
   },
 
-  clearChanges: function() {
-    return this.set('changeData', {});
+  discardChanges: function () {
+    return this.normalize();
   },
 
-  discardChanges: function() {
-    return this.store.normalize(this, this.modelData);
-  },
-
-  commitChanges: function() {
-    var changes;
-    if (!this.get('isPersistent')) {
-      this.discardChanges();
-      return Ember.RSVP.reject(new Ember.Error('You can not commit an unpersistent record.'));
-    }
-    this.clearChanges();
-    changes = this.getChanges();
-    if (Ember.$.isEmptyObject(changes)) {
-      return Ember.RSVP.resolve('There is no changes.');
-    }
-    this.set('changeData', changes);
-    return this.save();
-  },
-
-  save: function() {
-    var self;
+  save: function () {
     if (this.get('isDistroyed')) {
-      return Ember.RSVP.reject(new Ember.Error('You can not save distroyed record.'));
+      return Ember.RSVP.reject(new Ember.Error('You can not commit a distroyed record.'));
     }
-    self = this;
+
+    var changes = this.getChanges();
+    if (Ember.$.isEmptyObject(changes)) {
+      return Ember.RSVP.reject(new Ember.Error('There is no changes of this record.'));
+    }
+
     if (this.get('isNew')) {
-      return this.store.createRecord(this.getTypeKey(), this.modelData, self).then(function() {
-        return Ember.RSVP.resolve();
-      });
+      return this.store.createRecord(this.getTypeKey(), changes, this);
     } else {
-      return this.store.updateRecord(this.getTypeKey(), this.get('id'), this.changeData).then(function() {
-        self.clearChanges();
-        return Ember.RSVP.resolve();
-      }, function(err) {
-        self.discardChanges();
-        return Ember.RSVP.reject(err);
-      });
+      return this.store.updateRecord(this.getTypeKey(), this.get('id'), changes)
+        .catch(function (err) {
+          this.discardChanges();
+          return Ember.RSVP.reject(err);
+        }.bind(this));
     }
   },
 
   "delete": function() {
-    return this.store.destroyRecord(this.getTypeKey(), this.get('id')).then(function() {
-      return Ember.RSVP.resolve();
-    });
+    return this.store.destroyRecord(this.getTypeKey(), this.get('id'));
+  },
+
+  /**
+    setup modelData to record.
+  **/
+  normalize: function () {
+    var schema = this.getSchema();
+
+    for (var key in schema) {
+      var value = this.get('modelData.' + key);
+
+      if (schema[key].type.match(/string|boolean|number|timestamps/)) {
+        this.__normalizeNormal(key, value);
+      } else if (schema[key].type === 'belongTo') {
+        this.__normalizeBelongTo(key, value, schema[key].className);
+      } else if (schema[key].type === 'hasMany') {
+        this.__normalizeHasMany(key, value, schema[key].className);
+      }
+    }
+  },
+
+  /**
+    key of record, className's id, className's modelTypeKey('user')
+  **/
+  __normalizeBelongTo: function (key, id, className) {
+    return this.store.find(className, id)
+      .then(function (record) {
+        return this.set(key, record);
+      }.bind(this));
+  },
+
+  __normalizeHasMany: function (key, ids, className) {
+    var promises = ids.map(function (id) {
+      return this.store.find(className, id);
+    }.bind(this));
+
+    this.set(key, []);
+
+    Ember.RSVP.all(promises)
+      .then(function (records) {
+        this.get(key).pushObjects(records);
+      }.bind(this));
+  },
+
+  __normalizeNormal: function (key, value) {
+    this.set(key, value);
   }
 });
 
-/*
+/**
   {
     typeKey: 'user'
     schema: {
-      'belongTo': {'creator': 'user', 'category': 'term'},
-      'hasMany': {'tags': 'term', 'comments': 'comment'}
+      id: {type: 'string'},
+      objectId: {type: 'String'},
+      title: {type: 'string'},
+      creator: {type: 'belongTo', className: 'user'},
+      category: {type: 'belongTo', className: 'term'},
+      tags: {type: 'hasMany', className: 'term', defaultValue: []},
+
+      !!!The format of the two columns is YYYY-MM-DDTHH:mm:ss.SSSSZ (UTC Format);
+      createdAt: {type: 'timestamps'},
+      updatedAt: {type: 'timestamps'}
     }
   }
-*/
+**/
 Model.reopenClass({
   typeKey: '',
-  schema: {
-    belongTo: {},
-    hasMany: {}
-  }
+  schema: {}
 });
 
 export default Model;

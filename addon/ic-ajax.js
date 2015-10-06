@@ -103,7 +103,12 @@ function parseArgs() {
   settings.type = (settings.type || 'GET').toUpperCase();
   if (settings.type.match(/PUT|POST/)) {
     if (settings.data) {
+      settings.contentType = 'application/json; charset=utf-8'
       settings.data = JSON.stringify(settings.data);
+    }
+  } else if (settings.type === 'GET') {
+    if (settings.data && settings.data.where) {
+      settings.data.where = JSON.stringify(settings.data.where);
     }
   }
 

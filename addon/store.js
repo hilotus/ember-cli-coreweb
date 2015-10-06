@@ -5,64 +5,62 @@ var __cache__ = {};
 export default Ember.Object.extend({
   api: null,
 
-  find: function(modelTypeKey, id) {
-    var self;
-    if (id == null) {
-      id = {};
-    }
+  find: function (modelTypeKey, id) {
+    if (!id) { id = {}; }
+
     if (typeof id === 'string') {
       return this.findById(modelTypeKey, id);
     }
-    self = this;
-    return this.api.query(modelTypeKey, id).then(function(json) {
-      return Ember.RSVP.resolve(json.results.map(function(result) {
-        return self.push(modelTypeKey, result);
-      }));
-    });
+
+    return this.api.query(modelTypeKey, id)
+      .then(function (json) {
+        return Ember.RSVP.resolve(json.results.map(function (result) {
+          return this.push(modelTypeKey, result);
+        }, this));
+      }.bind(this));
   },
 
-  findById: function(modelTypeKey, id) {
-    var record, self;
-    self = this;
+  findById: function (modelTypeKey, id) {
+    var record;
     if (__cache__[modelTypeKey] && (record = __cache__[modelTypeKey][id])) {
       return Ember.RSVP.resolve(record);
     }
-    return this.api.query(modelTypeKey, id).then(function(json) {
-      return Ember.RSVP.resolve(self.push(modelTypeKey, json));
-    });
+
+    return this.api.query(modelTypeKey, id)
+      .then(function (json) {
+        return Ember.RSVP.resolve(this.push(modelTypeKey, json));
+      }.bind(this));
   },
 
-  createRecord: function(modelTypeKey, data, record) {
-    var self;
-    self = this;
-    return this.api.post(modelTypeKey, data).then(function(json) {
-      data.id = json._id || json.objectId;
-      Ember.merge(data, json);
-      self.push(modelTypeKey, data, record);
-      return Ember.RSVP.resolve();
-    });
+  createRecord: function (modelTypeKey, data, record) {
+    return this.api.post(modelTypeKey, data)
+      .then(function (json) {
+        data.id = json._id || json.objectId;
+        Ember.merge(data, json);
+        record = this.push(modelTypeKey, data, record);
+        return Ember.RSVP.resolve(record);
+      }.bind(this));
   },
 
-  updateRecord: function(modelTypeKey, id, data) {
-    var self;
-    self = this;
-    return this.api.put(modelTypeKey, id, data).then(function(json) {
-      self.reload(modelTypeKey, json, id);
-      return Ember.RSVP.resolve();
-    });
+  updateRecord: function (modelTypeKey, id, data) {
+    return this.api.put(modelTypeKey, id, data)
+      .then(function (json) {
+        Ember.merge(data, json);
+        var record = this.reload(modelTypeKey, data, id);
+        return Ember.RSVP.resolve(record);
+      }.bind(this));
   },
 
-  destroyRecord: function(modelTypeKey, id) {
-    var self;
-    self = this;
-    return this.api.delete(modelTypeKey, id).then(function() {
-      self.pull(modelTypeKey, id);
-      return Ember.RSVP.resolve();
-    });
+  destroyRecord: function (modelTypeKey, id) {
+    return this.api.delete(modelTypeKey, id)
+      .then(function () {
+        var record = this.pull(modelTypeKey, id);
+        return Ember.RSVP.resolve(record);
+      }.bind(this));
   },
 
-  commitChanges: function() {
-    var collection, model, modelId, modelTypeKey, models = [];
+  commitChanges: function () {
+    var collection, model, modelId, modelTypeKey, promises, models = [];
 
     for (modelTypeKey in __cache__) {
       collection = __cache__[modelTypeKey];
@@ -71,137 +69,65 @@ export default Ember.Object.extend({
         models.push(model);
       }
     }
-
-    var promises = models.map(function (item) {
-      return item.commitChanges();
-    });
-
+    promises = models.map(function (item) { return item.save(); });
     return Ember.RSVP.Promise.all(promises);
   },
 
-  push: function(clazz, json, record) {
-    var records, self;
-    self = this;
+  push: function (modelTypeKey, json, record) {
     if (Ember.isArray(json)) {
-      records = [];
-      return json.map(function(j) {
-        return self.__push(clazz, j, record);
-      });
+      return json.map(function (j) {
+        return this.__push(modelTypeKey, j, record);
+      }, this);
     } else {
-      return self.__push(clazz, json, record);
+      return this.__push(modelTypeKey, json, record);
     }
   },
 
-  reload: function(modelTypeKey, json, id) {
-    var record;
-    record = __cache__[modelTypeKey][id];
+  reload: function (modelTypeKey, data, id) {
+    var record = __cache__[modelTypeKey][id];
     if (!record) {
-      throw new Ember.Error("There is no " + modelTypeKey + " exists find by id " + id + ".");
+      throw new Ember.Error('The record (id: ' + id + ', modelTypeKey: ' + modelTypeKey + ') is not exist.');
     }
-    Ember.merge(json, record.get('changeData'));
-    record.merge(json);
-    __cache__[modelTypeKey][record.get('id')] = record;
-    return this.normalize(record, record.get('modelData'));
+    record.merge(data);
+    record.normalize();
+    return record;
   },
 
-  pull: function(typeKey, id) {
-    return this.__pull(typeKey, id);
-  },
-
-  /*
-    schema: {
-      'belongTo': {'creator': 'user', 'category': 'term'},
-      'hasMany': {'tags': 'term'}
+  pull: function (modelTypeKey, id) {
+    var record = __cache__[modelTypeKey][id];
+    if (!record) {
+      throw new Ember.Error('The record (id: ' + id + ', modelTypeKey: ' + modelTypeKey + ') is not exist.');
     }
-  */
-  normalize: function(record, data) {
-    var key, schema, value;
-    schema = record.constructor.schema;
-    for (key in data) {
-      value = data[key];
-      if (!Ember.isNone(schema.belongTo[key])) {
-        this.__normalizeBelongTo(record, schema.belongTo[key], key, value);
-      } else if (!Ember.isNone(schema.hasMany[key])) {
-        this.__normalizeHasMany(record, schema.hasMany[key], key, value);
-      } else {
-        record.set(key, this.__normalizeNormal(value));
-      }
-    }
+    delete __cache__[modelTypeKey][id];
+    record.pull();
     return record;
   },
 
   /************************/
 
-  __normalizeBelongTo: function(record, typeKey, key, value) {
-    return this.find(typeKey, value).then(function(r) {
-      return record.set(key, r);
-    });
+  __getModelClazz: function (modelTypeKey) {
+    return this.container.lookupFactory("model:" + modelTypeKey);
   },
 
-  /**
-    values: id array.
-  **/
-  __normalizeHasMany: function(record, typeKey, key, values) {
-    var promises = values.map(function (id) {
-      return this.find(typeKey, id);
-    }.bind(this));
-
-    record.set(key, []);
-
-    Ember.RSVP.all(promises)
-      .then(function (records) {
-        record.get(key).pushObjects(records);
-      });
-  },
-
-  __normalizeNormal: function(data) {
-    var key, v, value;
-    if (Ember.$.isPlainObject(data)) {
-      v = Ember.Object.create();
-      for (key in data) {
-        value = data[key];
-        v.set(key, this.__normalizeNormal(value));
-      }
-      return v;
-    } else {
-      return data;
-    }
-  },
-
-  __getModelClazz: function(clazz) {
-    if (typeof clazz !== 'string') {
-      return clazz;
-    }
-    return this.container.lookup("model:" + (clazz.toLowerCase())).constructor;
-  },
-
-  __push: function(clazz, json, record) {
-    clazz = this.__getModelClazz(clazz);
+  __push: function (modelTypeKey, json, record) {
     json.id = json.id || json._id || json.objectId;
     delete json._id;
     delete json.objectId;
-    if (!__cache__[clazz.typeKey]) {
-      __cache__[clazz.typeKey] = {};
-    }
-    if (Ember.isNone(record)) {
-      if (!__cache__[clazz.typeKey][json.id]) {
-        record = clazz.create();
-      } else {
-        record = __cache__[clazz.typeKey][json.id];
-      }
-    }
-    record.merge(json);
-    __cache__[clazz.typeKey][json.id] = record;
-    this.normalize(record, record.get('modelData'));
-    record.set('status', 'persistent');
-    return record;
-  },
 
-  __pull: function(typeKey, id) {
-    var record;
-    if ((record = __cache__[typeKey][id])) {
-      record.set('status', 'distroyed');
-      return delete __cache__[typeKey][id];
+    if (!__cache__[modelTypeKey]) {
+      __cache__[modelTypeKey] = {};
     }
+
+    if (Ember.isNone(record)) {
+      record = this.__getModelClazz(modelTypeKey).create();
+    }
+
+    if (!__cache__[modelTypeKey][json.id]) {
+      __cache__[modelTypeKey][json.id] = record;
+    }
+
+    record.merge(json);
+    record.normalize();
+    return record;
   }
 });
