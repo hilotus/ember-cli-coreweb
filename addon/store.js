@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import { CustomError } from './error';
 
 var __cache__ = {};
 
@@ -86,7 +87,7 @@ export default Ember.Object.extend({
   reload: function (modelTypeKey, data, id) {
     var record = __cache__[modelTypeKey][id];
     if (!record) {
-      throw new Ember.Error('The record (id: ' + id + ', modelTypeKey: ' + modelTypeKey + ') is not exist.');
+      throw new CustomError('The record (id: ' + id + ', modelTypeKey: ' + modelTypeKey + ') is not exist.', 521);
     }
     record.merge(data);
     record.normalize();
@@ -96,7 +97,7 @@ export default Ember.Object.extend({
   pull: function (modelTypeKey, id) {
     var record = __cache__[modelTypeKey][id];
     if (!record) {
-      throw new Ember.Error('The record (id: ' + id + ', modelTypeKey: ' + modelTypeKey + ') is not exist.');
+      throw new CustomError('The record (id: ' + id + ', modelTypeKey: ' + modelTypeKey + ') is not exist.', 521);
     }
     delete __cache__[modelTypeKey][id];
     record.pull();

@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import { CustomError } from './error';
 
 /**
   how to use model
@@ -100,12 +101,12 @@ var Model = Ember.Object.extend({
 
   save: function () {
     if (this.get('isDistroyed')) {
-      return Ember.RSVP.reject(new Ember.Error('You can not commit a distroyed record.'));
+      return Ember.RSVP.reject(new CustomError('You can not commit a distroyed record.', 511));
     }
 
     var changes = this.getChanges();
     if (Ember.$.isEmptyObject(changes)) {
-      return Ember.RSVP.reject(new Ember.Error('There is no changes of this record.'));
+      return Ember.RSVP.resolve('There is no changes to save.');
     }
 
     if (this.get('isNew')) {

@@ -7,6 +7,7 @@
  */
 
 import Ember from 'ember';
+import { CustomError } from './error';
 
 /*
  * jQuery.ajax wrapper, supports the same signature except providing
@@ -58,6 +59,10 @@ export function defineFixture(url, fixture) {
   __fixtures__[url] = fixture;
 }
 
+export function undefineFixture(url) {
+  delete __fixtures__[url];
+}
+
 /*
  * Looks up a fixture by url.
  *
@@ -97,13 +102,13 @@ function parseArgs() {
     settings.url = arguments[0];
   }
   if (settings.success || settings.error) {
-    throw new Ember.Error("ajax should use promises, received 'success' or 'error' callback");
+    throw new CustomError("Ajax should use promises, received 'success' or 'error' callback", 501);
   }
 
   settings.type = (settings.type || 'GET').toUpperCase();
   if (settings.type.match(/PUT|POST/)) {
     if (settings.data) {
-      settings.contentType = 'application/json; charset=utf-8'
+      settings.contentType = 'application/json; charset=utf-8';
       settings.data = JSON.stringify(settings.data);
     }
   } else if (settings.type === 'GET') {

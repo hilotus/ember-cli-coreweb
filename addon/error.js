@@ -1,14 +1,16 @@
-var CWError = (function() {
-  function CWError() {
-    this.constructor.prototype = Object.create(Error.prototype);
-    Error.captureStackTrace(this, this.constructor);
+class StandardError extends Error {
+  constructor(msg, code=500, isServerError=false) {
+    super(msg);
     this.name = this.constructor.name;
-    if (arguments.length > 0) {
-      this.message = arguments[0];
-      this.status = arguments[1] ? arguments[1] : 500;
-    }
+    this.message = msg;
+    this.code = code;
+    this.isServerError = isServerError;
+    Error.captureStackTrace(this, this.constructor.name);
   }
-  return CWError;
-})();
+}
 
-export default CWError;
+export class CustomError extends StandardError {
+  constructor(message, code, isServerError) {
+    super(message, code, isServerError);
+  }
+}

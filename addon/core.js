@@ -2,13 +2,13 @@ import Ember from 'ember';
 
 import Store from './store';
 import Model from './model';
-import CWError from './error';
+import { CustomError } from './error';
 
 var CW = Ember.Namespace.create({
   VERSION: '1.0.0',
   Store: Store,
   Model: Model,
-  Error: CWError
+  Error: CustomError
 });
 
 if (Ember.libraries) {

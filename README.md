@@ -15,7 +15,8 @@ ENV = {
       // required
       host: 'http://localhost:9292',
       namespace: '1',
-      // optional, (third-part. such as 'parse')
+      // optional, (third-part. such as 'parse api')
+      parse: true,
       applicationId: 'xxx',
       restApiKey: 'xxx',
       classPath: 'classes'
@@ -25,8 +26,19 @@ ENV = {
 }
 ```
 
-## TODO List
+## Error Code
 
-> How to stop the same ajax get call
+```
+// ic-ajax
+501: Ajax should use promises, received 'success' or 'error' callback
 
-For example, you can see the dummy project, when `this.store.find("post")`, the post has a `creator` column is a foreign key to `user model`, it will send several request to get user by `creator`.
+// api-service
+502: responseJson is undefined
+503: js error in send request progress promise
+
+// model
+511: You can not commit a distroyed record.
+
+// store
+521: 'The record (id: ' + id + ', modelTypeKey: ' + modelTypeKey + ') is not exist.'
+```

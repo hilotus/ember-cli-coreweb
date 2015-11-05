@@ -1,16 +1,26 @@
 import Ember from 'ember';
 import icajax from 'ember-cli-coreweb/ic-ajax';
+import { CustomError } from 'ember-cli-coreweb/error';
 import pluralize from 'ember-cli-coreweb/pluralize';
 
 var Parent = Ember.Service || Ember.Object;
 
 export default Parent.extend({
-  options: {
-    host: 'http://localhost:3000',
-    namespace: '1'
-  },
+  /*
+    api: {
+      // required
+      host: 'http://localhost:9292',
+      namespace: '1',
+      // optional, (third-part. such as 'parse api')
+      parse: true,
+      applicationId: 'xxx',
+      restApiKey: 'xxx',
+      classPath: 'classes'
+    }
+  */
+  options: null,
 
-  // Parse api session
+  // session token string after user login.
   sessionToken: null,
 
   query: function (modelTypeKey, id) {
@@ -54,19 +64,17 @@ export default Parent.extend({
     }).catch(function (res) {
       var err, json;
 
-      if (res.jqXHR) {
-        json = res.jqXHR.responseJSON;
-        if (!Ember.$.isPlainObject(json)) {
-          err = new Ember.Error(res.jqXHR.status + ': ' + res.jqXHR.statusText);
-        } else {
-          // parse error result.
-          // {"code":101,"error":"invalid login parameters"}
-          err = new Ember.Error(json.error);
-        }
-      } else if (res instanceof Error) {  // res is a Error;
+      json = res.response || res.jqXHR.responseJSON;
+
+      if (res instanceof Error) {
+        // TODO: merge err into CustomError
         err = res;
+      } else if (!Ember.$.isEmptyObject(json)) {
+        // parse error result.
+        // example {"code":101,"error":"invalid login parameters"}
+        err = new CustomError(json.error, json.code, true);
       } else {
-        err = new Ember.Error('Unkonw Error!');
+        err = new CustomError(res.jqXHR.status + ': ' + res.jqXHR.statusText, 502);
       }
 
       return Ember.RSVP.reject(err);
@@ -80,7 +88,7 @@ export default Parent.extend({
   buildUrl: function (modelTypeKey, id) {
     var path, ops = this.options;
 
-    if (ops.applicationId) {  // Parse api
+    if (ops.parse) {  // Parse api
       var isUserApi = modelTypeKey.match(/user|users|requestPasswordReset|login|logout/);
 
       if (isUserApi) {  // User api
@@ -116,7 +124,7 @@ export default Parent.extend({
   buildArgs: function (data) {
     var settings = {};
 
-    if (this.options.applicationId) {  // Parse api
+    if (this.options.parse) {  // Parse api
       settings.beforeSend = function (xhr) {
         xhr.setRequestHeader('X-Parse-Application-Id', this.get('options.applicationId'));
         xhr.setRequestHeader('X-Parse-REST-API-Key', this.get('options.restApiKey'));
