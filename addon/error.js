@@ -5,7 +5,11 @@ class StandardError extends Error {
     this.message = msg;
     this.code = code;
     this.isServerError = isServerError;
-    Error.captureStackTrace(this, this.constructor.name);
+
+    // Error.captureStackTrace is not defined in phantomJS
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, this.constructor.name);
+    }
   }
 }
 
