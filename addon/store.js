@@ -87,7 +87,7 @@ export default Ember.Object.extend({
   reload: function (modelTypeKey, data, id) {
     var record = __cache__[modelTypeKey][id];
     if (!record) {
-      throw new CustomError('The record (id: ' + id + ', modelTypeKey: ' + modelTypeKey + ') is not exist.', 521);
+      throw new CustomError('The record (id: ' + id + ', modelTypeKey: ' + modelTypeKey + ') is not exist.', 541);
     }
     record.merge(data);
     record.normalize();
@@ -97,7 +97,7 @@ export default Ember.Object.extend({
   pull: function (modelTypeKey, id) {
     var record = __cache__[modelTypeKey][id];
     if (!record) {
-      throw new CustomError('The record (id: ' + id + ', modelTypeKey: ' + modelTypeKey + ') is not exist.', 521);
+      throw new CustomError('The record (id: ' + id + ', modelTypeKey: ' + modelTypeKey + ') is not exist.', 541);
     }
     delete __cache__[modelTypeKey][id];
     record.pull();

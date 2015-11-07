@@ -101,12 +101,12 @@ var Model = Ember.Object.extend({
 
   save: function () {
     if (this.get('isDistroyed')) {
-      return Ember.RSVP.reject(new CustomError('You can not commit a distroyed record.', 511));
+      return Ember.RSVP.reject(new CustomError('You can not commit a distroyed record.', 531));
     }
 
     var changes = this.getChanges();
     if (Ember.$.isEmptyObject(changes)) {
-      return Ember.RSVP.resolve('There is no changes to save.');
+      return Ember.RSVP.reject(new CustomError('There is no changes to save.', 532));
     }
 
     if (this.get('isNew')) {

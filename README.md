@@ -30,15 +30,15 @@ ENV = {
 
 ```
 // ic-ajax
-501: Ajax should use promises, received 'success' or 'error' callback
+521: Ajax should use promises, received 'success' or 'error' callback
 
 // api-service
-502: responseJson is undefined
-503: js error in send request progress promise
+522: json response is undefined in ajax.
 
 // model
-511: You can not commit a distroyed record.
+531: You can not commit a distroyed record.
+532: There is no changes to save.
 
 // store
-521: 'The record (id: ' + id + ', modelTypeKey: ' + modelTypeKey + ') is not exist.'
+541: 'The record (id: ' + id + ', modelTypeKey: ' + modelTypeKey + ') is not exist.'
 ```

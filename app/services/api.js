@@ -73,7 +73,7 @@ export default Parent.extend({
         // example parse api result: {"code":101,"error":"invalid login parameters"}
         err = new CustomError(json.error, json.code, true);
       } else {
-        err = new CustomError(res.jqXHR.status + ': ' + res.jqXHR.statusText, 502);
+        err = new CustomError(res.jqXHR.status + ': ' + res.jqXHR.statusText, 522);
       }
 
       return Ember.RSVP.reject(err);

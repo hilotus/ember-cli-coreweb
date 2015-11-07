@@ -102,7 +102,7 @@ function parseArgs() {
     settings.url = arguments[0];
   }
   if (settings.success || settings.error) {
-    throw new CustomError("Ajax should use promises, received 'success' or 'error' callback", 501);
+    throw new CustomError("Ajax should use promises, received 'success' or 'error' callback", 521);
   }
 
   settings.type = (settings.type || 'GET').toUpperCase();
