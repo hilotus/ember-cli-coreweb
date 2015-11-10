@@ -90,6 +90,24 @@ var Model = Ember.Object.extend({
             changes[key] = value1;
           }
         }
+      } else if (schema[key].type === 'embedsIn') {
+        changes[key] = this.get(key).getChanges();
+        if (Ember.$.isEmptyObject(changes[key])) {
+          delete changes[key];
+        } else {
+          changes[key]['id'] = this.get(key + '.id');
+        }
+      } else if (schema[key].type === 'embedsMany') {
+        changes[key] = [];
+        var __changes;
+        this.get(key).forEach(function (record) {
+          __changes = record.getChanges();
+          if (!Ember.$.isEmptyObject(__changes)) {
+            __changes['id'] = record.get('id');
+            changes[key].push(__changes);
+          }
+          __changes = null;
+        }, this);
       }
     }
     return changes;
@@ -139,6 +157,10 @@ var Model = Ember.Object.extend({
         this.__normalizeBelongTo(key, value, schema[key].className);
       } else if (schema[key].type === 'hasMany') {
         this.__normalizeHasMany(key, value, schema[key].className);
+      } else if (schema[key].type === 'embedsIn') {
+        this.__normalizeEmbedsIn(key, value, schema[key].className);
+      } else if (schema[key].type === 'embedsMany') {
+        this.__normalizeEmbedsMany(key, value, schema[key].className);
       }
     }
   },
@@ -156,7 +178,7 @@ var Model = Ember.Object.extend({
   __normalizeHasMany: function (key, ids, className) {
     var promises = ids.map(function (id) {
       return this.store.find(className, id);
-    }.bind(this));
+    }, this);
 
     this.set(key, []);
 
@@ -164,6 +186,18 @@ var Model = Ember.Object.extend({
       .then(function (records) {
         this.get(key).pushObjects(records);
       }.bind(this));
+  },
+
+  __normalizeEmbedsIn: function (key, obj, className) {
+    this.set(key, this.store.push(className, obj));
+  },
+
+  __normalizeEmbedsMany: function (key, objs, className) {
+    this.set(key, []);
+
+    objs.forEach(function(obj) {
+      this.get(key).pushObject(this.store.push(className, obj));
+    }, this);
   },
 
   __normalizeNormal: function (key, value) {
@@ -181,6 +215,9 @@ var Model = Ember.Object.extend({
       creator: {type: 'belongTo', className: 'user'},
       category: {type: 'belongTo', className: 'term'},
       tags: {type: 'hasMany', className: 'term', defaultValue: []},
+
+      field: {type: 'embedsIn', className: 'field'},
+      steps: {type: 'embedsMany', className: 'step', defaultValue: []},
 
       !!!The format of the two columns is YYYY-MM-DDTHH:mm:ss.SSSSZ (UTC Format);
       createdAt: {type: 'timestamps'},

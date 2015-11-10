@@ -151,7 +151,7 @@ export default Parent.extend({
     } else {  // common server-backed api
     }
 
-    if (!Ember.$.isEmptyObject(data)) {
+    if (Ember.$.isPlainObject(data) && !Ember.$.isEmptyObject(data)) {
       settings.data = data;
     }
 
