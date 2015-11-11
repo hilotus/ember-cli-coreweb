@@ -153,14 +153,18 @@ var Model = Ember.Object.extend({
 
       if (schema[key].type.match(/string|boolean|number|timestamps/)) {
         this.__normalizeNormal(key, value);
-      } else if (schema[key].type === 'belongTo') {
-        this.__normalizeBelongTo(key, value, schema[key].className);
-      } else if (schema[key].type === 'hasMany') {
-        this.__normalizeHasMany(key, value, schema[key].className);
-      } else if (schema[key].type === 'embedsIn') {
-        this.__normalizeEmbedsIn(key, value, schema[key].className);
-      } else if (schema[key].type === 'embedsMany') {
-        this.__normalizeEmbedsMany(key, value, schema[key].className);
+      } else {
+        if (value) {
+          if (schema[key].type === 'belongTo') {
+            this.__normalizeBelongTo(key, value, schema[key].className);
+          } else if (schema[key].type === 'hasMany') {
+            this.__normalizeHasMany(key, value, schema[key].className);
+          } else if (schema[key].type === 'embedsIn') {
+            this.__normalizeEmbedsIn(key, value, schema[key].className);
+          } else if (schema[key].type === 'embedsMany') {
+            this.__normalizeEmbedsMany(key, value, schema[key].className);
+          }
+        }
       }
     }
   },
