@@ -85,12 +85,12 @@ export default Parent.extend({
     id: data (request body) / options (ajax) / id (string)
   */
   buildUrl: function (modelTypeKey, id) {
-    var path, ops = this.options;
+    var path, notObjectApi, ops = this.options;
 
     if (ops.parse) {  // Parse api
-      var isUserApi = modelTypeKey.match(/user|users|requestPasswordReset|login|logout/);
+      notObjectApi = modelTypeKey.match(/user|users|requestPasswordReset|login|logout|functions|jobs/);
 
-      if (isUserApi) {  // User api
+      if (notObjectApi) {  // User api
         path = modelTypeKey === 'user' ? 'users' : modelTypeKey;
       } else {  // other Object api
         path = modelTypeKey.classify();
@@ -100,7 +100,7 @@ export default Parent.extend({
         path = path + '/' + id;
       }
 
-      if (isUserApi) {
+      if (notObjectApi) {
         return ops.host + '/' + ops.namespace + '/' + path;
       } else {
         return ops.host + '/' + ops.namespace + '/' + ops.classesPath + '/' + path;
