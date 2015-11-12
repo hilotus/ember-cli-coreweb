@@ -149,7 +149,7 @@ var Model = Ember.Object.extend({
     var schema = this.getSchema();
 
     for (var key in schema) {
-      var value = this.get('modelData.' + key);
+      var value = this.get('modelData.' + key) || schema[key].defaultValue;
 
       if (schema[key].type.match(/string|boolean|number|timestamps/)) {
         this.__normalizeNormal(key, value);
