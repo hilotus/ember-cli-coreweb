@@ -151,8 +151,10 @@ var Model = Ember.Object.extend({
     for (var key in schema) {
       var value = this.get('modelData.' + key) || schema[key].defaultValue;
 
-      if (schema[key].type.match(/string|boolean|number|timestamps/)) {
+      if (schema[key].type.match(/string|number|timestamps/)) {
         this.__normalizeNormal(key, value);
+      } else if (schema[key].type === 'boolean') {
+        this.__normalizeNormal(key, !!value);
       } else {
         if (value) {
           if (schema[key].type === 'belongTo') {

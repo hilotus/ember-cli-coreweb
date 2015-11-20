@@ -60,16 +60,25 @@ export default Ember.Object.extend({
       }.bind(this));
   },
 
-  commitChanges: function () {
-    var collection, model, modelId, modelTypeKey, promises, models = [];
+  commitChanges: function (modelTypeKey) {
+    var collection, model, modelId, promises, models = [];
 
-    for (modelTypeKey in __cache__) {
+    if (modelTypeKey) {
       collection = __cache__[modelTypeKey];
       for (modelId in collection) {
         model = collection[modelId];
         models.push(model);
       }
+    } else {
+      for (modelTypeKey in __cache__) {
+        collection = __cache__[modelTypeKey];
+        for (modelId in collection) {
+          model = collection[modelId];
+          models.push(model);
+        }
+      }
     }
+
     promises = models.map(function (item) { return item.save(); });
     return Ember.RSVP.Promise.all(promises);
   },

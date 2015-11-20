@@ -30,6 +30,10 @@ export default Ember.Controller.extend({
 
     saveChanges: function () {
       return this.store.commitChanges();
+    },
+
+    saveChanges2: function () {
+      return this.store.commitChanges('todo');
     }
   }
 });
