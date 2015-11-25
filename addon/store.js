@@ -79,7 +79,13 @@ export default Ember.Object.extend({
       }
     }
 
-    promises = models.map(function (item) { return item.save(); });
+    promises = models.map(function (item) {
+      return item.save().then(record => {
+        return Ember.RSVP.resolve(record);
+      }).catch(err => {
+        return Ember.RSVP.reject(err);
+      });
+    });
     return Ember.RSVP.Promise.all(promises);
   },
 

@@ -33,7 +33,9 @@ export default Ember.Controller.extend({
     },
 
     saveChanges2: function () {
-      return this.store.commitChanges('todo');
+      return this.store.commitChanges('todo').catch(function (err) {
+        console.log(err.message);
+      });
     }
   }
 });
