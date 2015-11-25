@@ -67,8 +67,8 @@ export default Parent.extend({
       json = res.response || res.jqXHR.responseJSON;
 
       if (res instanceof Error) {
-        // TODO: merge err into CustomError
-        err = res;
+        err = new CustomError(res.message);
+        err.stack = res.stack;
       } else if (Ember.$.isPlainObject(json) && !Ember.$.isEmptyObject(json)) {
         // example parse api result: {"code":101,"error":"invalid login parameters"}
         err = new CustomError(json.error, json.code, true);

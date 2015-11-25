@@ -1,5 +1,5 @@
 class StandardError extends Error {
-  constructor(msg, code=500, isServerError=false) {
+  constructor(msg, code = 500, isServerError = false) {
     super(msg);
     this.name = this.constructor.name;
     this.message = msg;

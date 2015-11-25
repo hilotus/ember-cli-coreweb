@@ -83,7 +83,11 @@ export default Ember.Object.extend({
       return item.save().then(record => {
         return Ember.RSVP.resolve(record);
       }).catch(err => {
-        return Ember.RSVP.reject(err);
+        if (err.code === 532 || err.code === 531) {
+          return Ember.RSVP.resolve();
+        } else {
+          return Ember.RSVP.reject(err);
+        }
       });
     });
     return Ember.RSVP.Promise.all(promises);
