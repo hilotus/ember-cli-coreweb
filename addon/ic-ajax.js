@@ -73,9 +73,11 @@ export function lookupFixture (url) {
   return __fixtures__ && __fixtures__[url];
 }
 
+var urlPathReg = /.+?\:\/\/.+?(\/.+?)(?:#|\?|$)/;
+
 function makePromise(settings) {
   return new Ember.RSVP.Promise(function(resolve, reject) {
-    var fixture = lookupFixture(settings.url);
+    var fixture = lookupFixture(urlPathReg.exec(settings.url)[1]);
     if (fixture) {
       if (fixture.textStatus === 'success' || fixture.textStatus == null) {
         return Ember.run.later(null, resolve, fixture);
