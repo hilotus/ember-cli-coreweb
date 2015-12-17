@@ -2,10 +2,11 @@ import Ember from 'ember';
 
 export default Ember.Route.extend({
   model: function() {
-    var ctrl;
+    var ctrl, where;
     ctrl = this.controllerFor('todos');
     if (Ember.isBlank(ctrl.get('model'))) {
-      return this.store.find('todo', { where: {isCompleted: false}} );
+      where = {isCompleted: false};
+      return this.store.find('todo', { where: JSON.stringify(where) } );
     }
   }
 });

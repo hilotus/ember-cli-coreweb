@@ -73,11 +73,9 @@ export function lookupFixture (url) {
   return __fixtures__ && __fixtures__[url];
 }
 
-var urlPathReg = /.+?\:\/\/.+?(\/.+?)(?:#|\?|$)/;
-
 function makePromise(settings) {
   return new Ember.RSVP.Promise(function(resolve, reject) {
-    var fixture = lookupFixture(urlPathReg.exec(settings.url)[1]);
+    var fixture = lookupFixture(settings._path);
     if (fixture) {
       if (fixture.textStatus === 'success' || fixture.textStatus == null) {
         return Ember.run.later(null, resolve, fixture);
@@ -112,10 +110,6 @@ function parseArgs() {
     if (settings.data) {
       settings.contentType = 'application/json; charset=utf-8';
       settings.data = JSON.stringify(settings.data);
-    }
-  } else if (settings.type === 'GET') {
-    if (settings.data && settings.data.where) {
-      settings.data.where = JSON.stringify(settings.data.where);
     }
   }
 

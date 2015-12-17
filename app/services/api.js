@@ -1,7 +1,6 @@
 import Ember from 'ember';
 import icajax from 'ember-cli-coreweb/ic-ajax';
 import { CustomError } from 'ember-cli-coreweb/error';
-import pluralize from 'ember-cli-coreweb/pluralize';
 
 var Parent = Ember.Service || Ember.Object;
 
@@ -23,107 +22,44 @@ export default Parent.extend({
   // session token string after user login.
   sessionToken: null,
 
-  query: function (modelTypeKey, id) {
-    var settings = this.buildArgs(id);
-    settings.type = 'GET';
-    settings.url = this.buildUrl(modelTypeKey, id);
-
-    return this.sendRequest(settings);
+  query: function (path, data) {
+    return this.sendRequest('GET', path, data);
   },
 
-  post: function (modelTypeKey, data) {
-    var settings = this.buildArgs(data);
-    settings.type = 'POST';
-    settings.url = this.buildUrl(modelTypeKey);
-
-    return this.sendRequest(settings);
+  post: function (path, data) {
+    return this.sendRequest('POST', path, data);
   },
 
-  put: function (modelTypeKey, id, data) {
-    var settings = this.buildArgs(data);
-    settings.type = 'PUT';
-    settings.url = this.buildUrl(modelTypeKey, id);
-
-    return this.sendRequest(settings);
+  put: function (path, data) {
+    return this.sendRequest('PUT', path, data);
   },
 
-  delete: function (modelTypeKey, id) {
-    var settings = this.buildArgs();
-    settings.type = 'DELETE';
-    settings.url = this.buildUrl(modelTypeKey, id);
-
-    return this.sendRequest(settings);
+  delete: function (path) {
+    return this.sendRequest('DELETE', path);
   },
 
   /*
     Send ajax request with ic-ajax.
+      - method: get, post, put, delete
+      - path: api path
+      - data: query string or
   */
-  sendRequest: function (settings) {
-    return icajax(settings).then(function (res) {
-      return Ember.RSVP.resolve(res);
-    }).catch(function (res) {
-      var err, json;
+  sendRequest: function () {
+    var method = arguments[0],
+      path = arguments[1],
+      data = arguments[2],
+      ops = this.options,
+      settings = {};
 
-      json = res.response || res.jqXHR.responseJSON;
-
-      if (res instanceof Error) {
-        err = new CustomError(res.message);
-        err.stack = res.stack;
-      } else if (Ember.$.isPlainObject(json) && !Ember.$.isEmptyObject(json)) {
-        // example parse api result: {"code":101,"error":"invalid login parameters"}
-        err = new CustomError(json.error, json.code, true);
-      } else {
-        err = new CustomError(res.jqXHR.status + ': ' + res.jqXHR.statusText, 522);
-      }
-
-      return Ember.RSVP.reject(err);
-    });
-  },
-
-  /*
-    modelTypeKey: user / post / comment ...
-    id: data (request body) / options (ajax) / id (string)
-  */
-  buildUrl: function (modelTypeKey, id) {
-    var path, notObjectApi, ops = this.options;
-
-    if (ops.parse) {  // Parse api
-      notObjectApi = modelTypeKey.match(/user|users|requestPasswordReset|login|logout|functions|jobs/);
-
-      if (notObjectApi) {  // User api
-        path = modelTypeKey === 'user' ? 'users' : modelTypeKey;
-      } else {  // other Object api
-        path = modelTypeKey.classify();
-      }
-
-      if (typeof id === 'string') {
-        path = path + '/' + id;
-      }
-
-      if (notObjectApi) {
-        return ops.host + '/' + ops.namespace + '/' + path;
-      } else {
-        return ops.host + '/' + ops.namespace + '/' + ops.classesPath + '/' + path;
-      }
-    } else {  // common server-backed api
-      path = pluralize(modelTypeKey);
-
-      if (typeof id === 'string') {
-        path = path + '/' + id;
-      }
-
-      return ops.host + '/' + ops.namespace + '/' + path;
+    if (Ember.$.isPlainObject(data) && !Ember.$.isEmptyObject(data)) {
+      settings.data = data;
     }
-  },
+    settings.url = ops.host + '/' + ops.namespace + '/' + path;
+    settings.type = method;
+    settings._path = path;
 
-  /*
-    get: data --> query string
-    post / put: data --> request body
-  */
-  buildArgs: function (data) {
-    var settings = {};
-
-    if (this.options.parse) {  // Parse api
+    // Parse api, before send
+    if (ops.parse) {
       settings.beforeSend = function (xhr) {
         xhr.setRequestHeader('X-Parse-Application-Id', this.get('options.applicationId'));
         xhr.setRequestHeader('X-Parse-REST-API-Key', this.get('options.restApiKey'));
@@ -148,13 +84,26 @@ export default Parent.extend({
           xhr.setRequestHeader('X-Parse-Session-Token', this.get('sessionToken'));
         }
       }.bind(this);
-    } else {  // common server-backed api
     }
 
-    if (Ember.$.isPlainObject(data) && !Ember.$.isEmptyObject(data)) {
-      settings.data = data;
-    }
+    return icajax(settings).then(function (res) {
+      return Ember.RSVP.resolve(res);
+    }).catch(function (res) {
+      var err, json;
 
-    return settings;
+      json = res.response || res.jqXHR.responseJSON;
+
+      if (res instanceof Error) {
+        err = new CustomError(res.message);
+        err.stack = res.stack;
+      } else if (Ember.$.isPlainObject(json) && !Ember.$.isEmptyObject(json)) {
+        // example parse api result: {"code":101,"error":"invalid login parameters"}
+        err = new CustomError(json.error, json.code, true);
+      } else {
+        err = new CustomError(res.jqXHR.status + ': ' + res.jqXHR.statusText, 522);
+      }
+
+      return Ember.RSVP.reject(err);
+    });
   }
 });

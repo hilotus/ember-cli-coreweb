@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import { CustomError } from './error';
+import pluralize from 'ember-cli-coreweb/pluralize';
 
 var __cache__ = {};
 
@@ -13,7 +14,7 @@ export default Ember.Object.extend({
       return this.findById(modelTypeKey, id);
     }
 
-    return this.api.query(modelTypeKey, id)
+    return this.api.query(this.__buildPath(modelTypeKey), id)
       .then(function (json) {
         return Ember.RSVP.resolve(json.results.map(function (result) {
           return this.push(modelTypeKey, result);
@@ -27,14 +28,14 @@ export default Ember.Object.extend({
       return Ember.RSVP.resolve(record);
     }
 
-    return this.api.query(modelTypeKey, id)
+    return this.api.query(this.__buildPath(modelTypeKey, id))
       .then(function (json) {
         return Ember.RSVP.resolve(this.push(modelTypeKey, json));
       }.bind(this));
   },
 
   createRecord: function (modelTypeKey, data, record) {
-    return this.api.post(modelTypeKey, data)
+    return this.api.post(this.__buildPath(modelTypeKey), data)
       .then(function (json) {
         data.id = json._id || json.objectId;
         Ember.merge(data, json);
@@ -44,7 +45,7 @@ export default Ember.Object.extend({
   },
 
   updateRecord: function (modelTypeKey, id, data) {
-    return this.api.put(modelTypeKey, id, data)
+    return this.api.put(this.__buildPath(modelTypeKey, id), data)
       .then(function (json) {
         Ember.merge(data, json);
         var record = this.reload(modelTypeKey, data, id);
@@ -53,7 +54,7 @@ export default Ember.Object.extend({
   },
 
   destroyRecord: function (modelTypeKey, id) {
-    return this.api.delete(modelTypeKey, id)
+    return this.api.delete(this.__buildPath(modelTypeKey, id))
       .then(function () {
         var record = this.pull(modelTypeKey, id);
         return Ember.RSVP.resolve(record);
@@ -144,11 +145,39 @@ export default Ember.Object.extend({
 
     // We will replace the old existed record
     // if (!__cache__[modelTypeKey][json.id]) {
-      __cache__[modelTypeKey][json.id] = record;
+    __cache__[modelTypeKey][json.id] = record;
     // }
 
     record.merge(json);
     record.normalize();
     return record;
+  },
+
+  __buildPath: function (modelTypeKey, id) {
+    var path, notObjectApi;
+
+    if (this.get('api.options.parse')) {
+      notObjectApi = modelTypeKey.match(/user|users|requestPasswordReset|login|logout|functions|jobs/);
+
+      if (notObjectApi) {  // User api
+        path = modelTypeKey === 'user' ? 'users' : modelTypeKey;
+      } else {  // other Object api
+        path = modelTypeKey.classify();
+      }
+
+      if (typeof id === 'string') {
+        path = path + '/' + id;
+      }
+
+      if (!notObjectApi) {
+        path = this.get('api.options.classesPath') + '/' + path;
+      }
+    } else {
+      path = pluralize(modelTypeKey);
+      if (typeof id === 'string') {
+        path = path + '/' + id;
+      }
+    }
+    return path;
   }
 });
