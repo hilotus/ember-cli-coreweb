@@ -35,6 +35,17 @@ export default Ember.Object.extend({
   },
 
   createRecord: function (modelTypeKey, data, record) {
+    // merge default value to data.
+    var Model = this.__getModelClazz(modelTypeKey),
+      schema = Model.schema,
+      key;
+
+    for (key in schema) {
+      if (!data[key] && typeof schema[key].defaultValue !== 'undefined') {
+        data[key] = schema[key].defaultValue;
+      }
+    }
+
     return this.api.post(this.__buildPath(modelTypeKey), data)
       .then(function (json) {
         data.id = json._id || json.objectId;

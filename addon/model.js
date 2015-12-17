@@ -56,17 +56,20 @@ var Model = Ember.Object.extend({
 
   getChanges: function () {
     var changes = {},
-      schema = this.getSchema();
+      schema = this.getSchema(),
+      defaultValue, key, value1, value2, __changes;
 
-    for (var key in schema) {
+    for (key in schema) {
       // common api, parse api, timestamps(createdAt, updatedAt)
       if (key === 'id' || key === 'objectId' || schema[key].type === 'timestamps') {
         continue;
       }
 
+      defaultValue = schema[key].defaultValue;
+
       if (schema[key].type.match(/string|boolean|number/)) {
         if (this.get('isNew')) {
-          changes[key] = this.get(key);
+          changes[key] = this.get(key) || defaultValue;
         } else if (this.get('isPersistent')) {
           if (this.get(key) !== this.get('modelData.' + key)) {
             changes[key] = this.get(key);
@@ -82,10 +85,10 @@ var Model = Ember.Object.extend({
         }
       } else if (schema[key].type === 'hasMany') {
         if (this.get('isNew')) {
-          changes[key] = this.get(key).map(function (item) { return item.get('id'); });
+          changes[key] = (this.get(key) || defaultValue || []).map(function (item) { return item.get('id'); });
         } else if (this.get('isPersistent')) {
-          var value1 = this.get(key).map(function (item) { return item.get('id'); });
-          var value2 = this.get('modelData.' + key);
+          value1 = (this.get(key) || defaultValue || []).map(function (item) { return item.get('id'); });
+          value2 = this.get('modelData.' + key);
           if (Ember.$(value1).not(value2).length !== 0 || Ember.$(value2).not(value1).length !== 0) {
             changes[key] = value1;
           }
@@ -99,7 +102,6 @@ var Model = Ember.Object.extend({
         }
       } else if (schema[key].type === 'embedsMany') {
         changes[key] = [];
-        var __changes;
         this.get(key).forEach(function (record) {
           __changes = record.getChanges();
           if (!Ember.$.isEmptyObject(__changes)) {
