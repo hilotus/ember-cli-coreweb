@@ -89,7 +89,7 @@ var Model = Ember.Object.extend({
         } else if (this.get('isPersistent')) {
           value1 = (this.get(key) || defaultValue || []).map(function (item) { return item.get('id'); });
           value2 = this.get('modelData.' + key);
-          if (Ember.$(value1).not(value2).length !== 0 || Ember.$(value2).not(value1).length !== 0) {
+          if (!value1.equals(value2)) {
             changes[key] = value1;
           }
         }

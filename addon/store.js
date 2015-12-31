@@ -155,9 +155,9 @@ export default Ember.Object.extend({
     }
 
     // We will replace the old existed record
-    // if (!__cache__[modelTypeKey][json.id]) {
-    __cache__[modelTypeKey][json.id] = record;
-    // }
+    if (!__cache__[modelTypeKey][json.id]) {
+      __cache__[modelTypeKey][json.id] = record;
+    }
 
     record.merge(json);
     record.normalize();

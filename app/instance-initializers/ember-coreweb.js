@@ -1,6 +1,8 @@
 import Ember from 'ember';
 import ENV from '../config/environment';
 
+import 'ember-cli-coreweb/array_ext';
+
 export default {
   name: 'ember-cli-coreweb',
   after: 'coreweb',
