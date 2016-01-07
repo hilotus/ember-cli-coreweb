@@ -119,10 +119,15 @@ var Model = Ember.Object.extend({
     return this.normalize();
   },
 
+  beforeSave: function() {},
+
   save: function () {
     if (this.get('isDistroyed')) {
       return Ember.RSVP.reject(new CustomError('You can not commit a distroyed record.', 531));
     }
+
+    // beforeSave
+    this.beforeSave();
 
     var changes = this.getChanges();
     if (Ember.$.isEmptyObject(changes)) {
