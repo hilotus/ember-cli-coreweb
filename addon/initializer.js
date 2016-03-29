@@ -5,10 +5,10 @@ Ember.onLoad('Ember.Application', function (Application) {
   Application.initializer({
     name: 'coreweb',
 
-    initialize: function (registry) {
+    initialize: function (registry, a, b) {
       registry.register('store:-cw', CW.Store);
-      registry.injection('controller', 'store', 'store:-cw');
-      registry.injection('route', 'store', 'store:-cw');
+      registry.inject('controller', 'store', 'store:-cw');
+      registry.inject('route', 'store', 'store:-cw');
     }
   });
 
@@ -16,7 +16,7 @@ Ember.onLoad('Ember.Application', function (Application) {
     name: 'coreweb',
 
     initialize: function (instance) {
-      CW.Model.reopen({store: instance.container.lookup("store:-cw")});
+      CW.Model.reopen({store: instance.lookup("store:-cw")});
     }
   });
 });

@@ -138,7 +138,7 @@ export default Ember.Object.extend({
   /************************/
 
   __getModelClazz: function (modelTypeKey) {
-    return this.container.lookupFactory("model:" + modelTypeKey);
+    return Ember.getOwner(this).resolveRegistration('model:' + modelTypeKey);
   },
 
   __push: function (modelTypeKey, json, record) {

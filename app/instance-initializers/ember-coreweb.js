@@ -10,8 +10,8 @@ export default {
   initialize: function(instance) {
     var CW = ENV.CW || ENV.default.CW || {};
 
-    var api = instance.container.lookup('service:api');
+    var api = instance.lookup('service:api');
     api.set('options', CW.api);
-    instance.container.lookup('store:-cw').set('api', api);
+    instance.lookup('store:-cw').set('api', api);
   }
 }

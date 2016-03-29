@@ -5,7 +5,7 @@ import Model from './model';
 import { CustomError } from './error';
 
 var CW = Ember.Namespace.create({
-  VERSION: '1.0.0',
+  VERSION: '2.0.0',
   Store: Store,
   Model: Model,
   Error: CustomError
